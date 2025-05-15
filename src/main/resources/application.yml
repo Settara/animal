@@ -1,0 +1,14 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: animal
+  datasource:
+    url: jdbc:postgresql://localhost:5432/animal
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
