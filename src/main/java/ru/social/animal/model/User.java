@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +25,10 @@ public class User {
     private String email;
     private String sex;
     private String imageProfile;
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Advertisement> advertisements = new ArrayList<>();
+    private List<Advert> adverts = new ArrayList<>();
 
 
 }

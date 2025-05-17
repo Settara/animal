@@ -7,15 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Advertisement {
+public class Advert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

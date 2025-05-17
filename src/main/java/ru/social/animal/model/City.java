@@ -25,6 +25,6 @@ public class City {
     private Region region;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Advertisement> advertisements = new ArrayList<>();
+    private List<Advert> adverts = new ArrayList<>();
 
 }

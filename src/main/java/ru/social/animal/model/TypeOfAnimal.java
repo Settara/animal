@@ -21,7 +21,7 @@ public class TypeOfAnimal {
     private String title;
 
     @OneToMany(mappedBy = "typeOfAnimal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Advertisement> advertisements = new ArrayList<>();
+    private List<Advert> adverts = new ArrayList<>();
 
 
 
