@@ -1,6 +1,8 @@
 package ru.social.animal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +19,11 @@ public class Advert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Size(max = 500)
     private String description;
     private String address;
+    @Column(unique = true)
     private String linkImage;
     private boolean isFound;
     private LocalDate datePublish;

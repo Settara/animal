@@ -1,166 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
-            font-family: Arial, sans-serif;
-        }
-
-        header {
-            background-color: #ffffff;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            z-index: 10;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title {
-            flex-grow: 1;
-            text-align: center;
-        }
-
-        .form-container {
-            background-color: white;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            margin-top: 5rem; /* Отступ для фиксации header */
-        }
-
-        .form-container h1 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            color: #333;
-        }
-
-        .form-container label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            color: #555;
-        }
-
-        .form-container input {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .form-container button {
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            color: white;
-            background-color: #007bff;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out; /* Плавный переход для наведения */
-        }
-
-        .form-container button:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .form-container a {
-            display: block;
-            margin-top: 1rem;
-            color: #007bff;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.3s ease-in-out; /* Плавный переход для текста */
-        }
-
-        .form-container a:hover {
-            color: #0056b3;
-        }
-
-        .back-button {
-            color: white;
-            background-color: #007bff;
-            border: 1px solid #007bff;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: all 0.3s ease-in-out; /* Плавный переход для наведения */
-            display: inline-block;
-            margin-top: 2rem;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-            color: white;
-        }
-
-        .form-container a {
-            display: block;
-            margin-top: 1rem;
-            color: #007bff;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.3s ease-in-out, text-decoration 0.3s ease-in-out; /* Добавим переход для подчёркивания */
-        }
-
-        .form-container a:hover {
-            color: #0056b3;
-            text-decoration: underline; /* Подчёркивание при наведении */
-        }
-
-    </style>
 </head>
-
-<body>
-<header>
-    <div class="container header-container">
-        <h3 class="mb-0 header-title">Электронная система подачи документов в ВУЗы</h3>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center vh-100">
+<header class="w-100 fixed-top bg-white border-bottom py-3">
+    <div class="container text-center">
+        <h3 class="mb-0">Animal Connect — Социальная сеть для владельцев животных</h3>
     </div>
 </header>
 
-<div class="form-container">
-    <h1>Вход</h1>
-    <form action="/login" method="POST" enctype="utf8">
-        <label>Введите Email</label>
-        <input type="email" name="username" required />
-
-        <label>Введите пароль</label>
-        <input type="password" name="password" required />
-
-        <button style="margin-top: 2rem; margin-bottom: 1rem" type="submit">Войти</button>
-    </form>
-    <a href="/register">Регистрация</a>
-</div>
-
-<div style="margin-top: 1rem">
-    <a href="/" class="back-button">Вернуться на главную страницу</a>
-</div>
-
+<main class="container mt-5 pt-5">
+    <div class="card mx-auto shadow-sm" style="max-width: 400px;">
+        <div class="card-body text-center">
+            <h1 class="mb-4">Вход</h1>
+            <form action="/login" method="POST">
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label">Введите Email</label>
+                    <input type="email" class="form-control" id="email" name="username" required>
+                </div>
+                <div class="mb-4 text-start">
+                    <label for="password" class="form-label">Введите пароль</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
+            </form>
+            <a href="/register">Регистрация</a>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a href="/" class="btn btn-primary">Вернуться на главную страницу</a>
+    </div>
+</main>
 </body>
 </html>

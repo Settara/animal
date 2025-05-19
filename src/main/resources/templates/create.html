@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать объявление</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Создание объявления о пропавшем животном</h2>
+    <form th:action="@{/adverts/create}" method="post">
+        <div class="mb-3">
+            <label for="description" class="form-label">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Адрес</label>
+            <input type="text" class="form-control" id="address" name="address" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="linkImage" class="form-label">Ссылка на изображение</label>
+            <input type="text" class="form-control" id="linkImage" name="linkImage">
+        </div>
+
+        <div class="mb-3">
+            <label for="cityId" class="form-label">Город</label>
+            <select class="form-select" id="cityId" name="cityId" required>
+                <option th:each="city : ${cities}"
+                        th:value="${city.id}"
+                        th:text="${city.title}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="regionId" class="form-label">Регион</label>
+            <select class="form-select" id="regionId" name="regionId" required>
+                <option th:each="region : ${regions}"
+                        th:value="${region.id}"
+                        th:text="${region.title}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="typeOfAnimalId" class="form-label">Тип животного</label>
+            <select class="form-select" id="typeOfAnimalId" name="typeOfAnimalId" required>
+                <option th:each="type : ${animalTypes}"
+                        th:value="${type.id}"
+                        th:text="${type.title}">
+                </option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+</div>
+</body>
+</html>

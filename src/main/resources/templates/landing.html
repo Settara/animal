@@ -5,124 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Connect — Социальная сеть для владельцев животных</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-
-        header {
-            background-color: #ffffff;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title {
-            flex-grow: 1;
-            text-align: center;
-        }
-
-        .nav-tabs {
-            justify-content: center;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .nav-link {
-            color: #007bff;
-        }
-
-        .nav-link.active {
-            background-color: #e9ecef;
-            border-color: #dee2e6;
-        }
-
-        .content {
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        footer {
-            margin-top: 2rem;
-            background-color: #f1f3f5;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .carousel-item img {
-            object-fit: cover;
-            width: 100%;
-            height: 500px;
-        }
-
-        .btn-outline-secondary {
-            color: #007bff;
-            border: 2px solid #007bff;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: #007bff;
-            color: #ffffff;
-            border-color: #007bff;
-        }
-    </style>
 </head>
-
-<body>
-<header>
-    <div class="container header-container">
-        <h3 class="mb-0 header-title" style="margin-left: 260px;">Animal Connect — Сеть для владельцев животных</h3>
-        <div>
-            <a href="/login" class="btn btn-outline-secondary me-2">Войти</a>
-            <a href="/register" class="btn btn-outline-secondary">Зарегистрироваться</a>
+<body class="bg-light">
+<header class="bg-white border-bottom py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h3 class="mb-0 mx-auto">Animal Connect — Сеть для владельцев животных</h3>
+        <div class="position-absolute end-0 me-3">
+            <a href="/login" class="btn btn-outline-primary me-2">Войти</a>
+            <a href="/register" class="btn btn-outline-primary">Зарегистрироваться</a>
         </div>
     </div>
 </header>
 
-<div class="container mt-3">
-    <ul class="nav nav-tabs d-flex">
+<main class="container mt-4">
+    <ul class="nav nav-tabs justify-content-center">
         <li class="nav-item">
-            <a class="nav-link active" href="#about" data-bs-toggle="tab">О проекте</a>
+            <a class="nav-link active" data-bs-toggle="tab" href="#about">О проекте</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#missing" data-bs-toggle="tab">Пропавшие животные</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#missing">Пропавшие животные</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#contacts" data-bs-toggle="tab">Контакты</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#contacts">Контакты</a>
         </li>
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active content" id="about">
+        <div class="tab-pane fade show active bg-white border rounded p-4 mt-3 text-center" id="about">
             <h4>Найди своего любимца!</h4>
             <p>Animal Connect — это социальная платформа, созданная для помощи в поиске пропавших животных и общения владельцев.</p>
             <p>Размещайте объявления, ищите по фильтрам, делитесь информацией и помогайте другим найти своих питомцев.</p>
         </div>
-
-        <div class="tab-pane fade content" id="missing">
+        <div class="tab-pane fade bg-white border rounded p-4 mt-3 text-center" id="missing">
             <h4>Раздел пропавших животных</h4>
             <p>🔍 Здесь вы можете разместить объявление о пропавшем питомце или помочь найти чужого.</p>
             <p>Используйте фильтры по виду животного, городу и региону, чтобы найти нужную информацию быстрее.</p>
-            <a href="/advertisements" class="btn btn-outline-secondary mt-3">Перейти к объявлениям</a>
+            <a href="/advertisements" class="btn btn-outline-primary mt-3">Перейти к объявлениям</a>
         </div>
-
-        <div class="tab-pane fade content" id="contacts">
+        <div class="tab-pane fade bg-white border rounded p-4 mt-3 text-center" id="contacts">
             <h3>Связь с нами</h3>
-            <p>Email: support@animalconnect.ru<br>
-                Телефон: +7 (800) 555-35-35</p>
+            <p>Email: support@animalconnect.ru<br>Телефон: +7 (800) 555-35-35</p>
         </div>
     </div>
 
@@ -134,13 +56,13 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="/images/pets1.jpg" class="d-block w-100" alt="Животные">
+                <img src="/images/pets1.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Животные">
             </div>
             <div class="carousel-item">
-                <img src="/images/pets2.jpg" class="d-block w-100" alt="Поиск животных">
+                <img src="/images/pets2.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Поиск животных">
             </div>
             <div class="carousel-item">
-                <img src="/images/pets3.jpg" class="d-block w-100" alt="Счастливые истории">
+                <img src="/images/pets3.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Счастливые истории">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -152,11 +74,11 @@
             <span class="visually-hidden">Вперёд</span>
         </button>
     </div>
-</div>
+</main>
 
-<footer>
-    <div class="h6 container">
-        <p>&copy; Animal Connect, 2025. Все права защищены.</p>
+<footer class="bg-light border-top py-3 mt-5">
+    <div class="container text-center">
+        <p class="mb-0">&copy; Animal Connect, 2025. Все права защищены.</p>
     </div>
 </footer>
 
