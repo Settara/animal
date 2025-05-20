@@ -19,11 +19,11 @@ public class Advert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    //@NotNull
     @Size(max = 500)
     private String description;
     private String address;
-    @Column(unique = true)
+    //@Column(unique = true)
     private String linkImage;
     private boolean isFound;
     private LocalDate datePublish;
