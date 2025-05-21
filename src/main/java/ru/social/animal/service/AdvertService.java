@@ -9,16 +9,24 @@ import ru.social.animal.repository.CityRepo;
 import ru.social.animal.repository.RegionRepo;
 import ru.social.animal.repository.TypeOfAnimalRepo;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class AdvertService {
 
     @Autowired
     private AdvertRepo advertRepo;
-    @Autowired private CityRepo cityRepo;
-    @Autowired private RegionRepo regionRepo;
-    @Autowired private TypeOfAnimalRepo typeOfAnimalRepo;
+
+    @Autowired
+    private CityRepo cityRepo;
+
+    @Autowired
+    private RegionRepo regionRepo;
+
+    @Autowired
+    private TypeOfAnimalRepo typeOfAnimalRepo;
 
     public void createAdvert(String description, String address, String linkImage,
                              Long cityId, Long regionId, Long typeOfAnimalId, User user) {
@@ -36,5 +44,18 @@ public class AdvertService {
 
         advertRepo.save(advert);
     }
-}
 
+    public void save(Advert advert) {
+        advertRepo.save(advert);
+    }
+
+    public List<Advert> getFilteredAdverts(Long cityId, Long regionId, LocalDate date) {
+        if (cityId == null && regionId == null && date == null) {
+            return advertRepo.findAllByOrderByDatePublishDesc(); // все по убыванию даты
+        }
+
+        return advertRepo.findByFilters(cityId, regionId, date);
+    }
+
+
+}

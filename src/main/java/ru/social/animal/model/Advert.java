@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,17 +18,28 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Advert {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //@NotNull
+
+    @NotNull
     @Size(max = 500)
     private String description;
+
+    @NotNull
+    @Size(max = 200)
     private String address;
-    //@Column(unique = true)
-    private String linkImage;
+
+    @Column(unique = true)
+    private String linkImage; // Можно удалить, если больше не используешь
+
     private boolean isFound;
+
+    @NotNull
     private LocalDate datePublish;
+
+    private LocalDateTime createdAt; // Новый атрибут даты и времени создания
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -43,5 +56,4 @@ public class Advert {
     @ManyToOne
     @JoinColumn(name = "type_of_animal_id")
     private TypeOfAnimal typeOfAnimal;
-
 }

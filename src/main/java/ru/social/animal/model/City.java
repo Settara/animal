@@ -1,6 +1,7 @@
 package ru.social.animal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,9 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(unique = true)
     private String title;
 
     @ManyToOne
@@ -27,4 +31,8 @@ public class City {
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Advert> adverts = new ArrayList<>();
 
+    public City(Long id) {
+        this.id = id;
+    }
 }
+

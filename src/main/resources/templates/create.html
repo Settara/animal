@@ -8,7 +8,7 @@
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">Создание объявления о пропавшем животном</h2>
-    <form th:action="@{/adverts/add}" method="post">
+    <form th:action="@{/adverts/add}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
             <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
@@ -20,8 +20,8 @@
         </div>
 
         <div class="mb-3">
-            <label for="linkImage" class="form-label">Ссылка на изображение</label>
-            <input type="text" class="form-control" id="linkImage" name="linkImage">
+            <label for="imageFile" class="form-label">Изображение</label>
+            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
         </div>
 
         <div class="mb-3">
