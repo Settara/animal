@@ -13,6 +13,9 @@ import ru.social.animal.service.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -82,26 +85,24 @@ public class AdvertController {
 
         User user = userOpt.get();
 
-        // Абсолютный путь к папке ресурсов
-        String staticResourcesPath = "D:\\IdeaProjects\\animal\\animal\\src\\main\\resources\\static";
-        String uploadsPath = staticResourcesPath + "\\uploads\\advertImages";
+        // Получаем рабочую директорию приложения
+        Path workingDir = Paths.get("").toAbsolutePath();
 
-        // Создаем директорию, если она не существует
-        File userDir = new File(uploadsPath);
-
-        if (!userDir.exists()) {
-            if (!userDir.mkdirs()) {
-                throw new IOException("Не удалось создать директорию: " + uploadsPath);
+        // Путь до папки uploads/1 внутри рабочей директории
+        File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
+        if (!uploadDir.exists()) {
+            if (!uploadDir.mkdirs()) {
+                throw new IOException("Не удалось создать директорию: " + uploadDir.getAbsolutePath());
             }
         }
-        File destinationFilePhoto = new File(userDir, imageFile.getOriginalFilename());
 
-        imageFile.transferTo(destinationFilePhoto);
+        File destinationFile = new File(uploadDir, imageFile.getOriginalFilename());
+        imageFile.transferTo(destinationFile);
 
-        // Для использования в приложении сохраняем относительный путь от static
-        String relativePath = "/uploads/advertImages/" + imageFile.getOriginalFilename();
+        // Путь для доступа через браузер: /uploads/{userId}/{имя_файла}
+        String relativePath = "/uploads/" + user.getId() + "/" + imageFile.getOriginalFilename();
 
-        advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, userOpt.get());
+        advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, user);
         return "redirect:/tape";
     }
 

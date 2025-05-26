@@ -14,10 +14,8 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
 
     @Query("SELECT a FROM Advert a WHERE " +
             "(:cityId IS NULL OR a.city.id = :cityId) AND " +
-            "(:regionId IS NULL OR a.region.id = :regionId) AND " +
-            "(:date IS NULL OR a.datePublish = :date) " +
+            "(:regionId IS NULL OR a.region.id = :regionId)" +
             "ORDER BY a.datePublish DESC")
     List<Advert> findByFilters(@Param("cityId") Long cityId,
-                               @Param("regionId") Long regionId,
-                               @Param("date") LocalDate date);
+                               @Param("regionId") Long regionId);
 }

@@ -26,10 +26,6 @@
                 <option th:each="region : ${regions}" th:value="${region.id}" th:text="${region.title}"></option>
             </select>
         </div>
-        <div class="col-md-3">
-            <label class="form-label">Дата</label>
-            <input type="date" class="form-control" name="date">
-        </div>
         <div class="col-md-3 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100">Применить фильтр</button>
         </div>

@@ -27,10 +27,9 @@ public class TapeController {
     @GetMapping("/tape")
     public String showTape(@RequestParam(required = false) Long cityId,
                            @RequestParam(required = false) Long regionId,
-                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                            Model model) {
 
-        List<Advert> adverts = advertService.getFilteredAdverts(cityId, regionId, date);
+        List<Advert> adverts = advertService.getFilteredAdverts(cityId, regionId);
         model.addAttribute("adverts", adverts);
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("regions", regionService.findAll());
