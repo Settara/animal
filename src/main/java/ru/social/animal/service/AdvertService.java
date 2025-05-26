@@ -9,7 +9,6 @@ import ru.social.animal.repository.CityRepo;
 import ru.social.animal.repository.RegionRepo;
 import ru.social.animal.repository.TypeOfAnimalRepo;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,9 +52,21 @@ public class AdvertService {
         if (cityId == null && regionId == null) {
             return advertRepo.findAllByOrderByDatePublishDesc(); // все по убыванию даты
         }
-
         return advertRepo.findByFilters(cityId, regionId);
     }
 
+    public Advert getAdvertById(Long id) {
+        return advertRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Объявление с id " + id + " не найдено"));
+    }
 
+    public List<Advert> getMyAdverts(User user) {
+        return advertRepo.findAllByUserOrderByDatePublishDesc(user);
+    }
+
+    public void markAsFound(Long advertId) {
+        Advert a = getAdvertById(advertId);
+        a.setFound(true);
+        advertRepo.save(a);
+    }
 }

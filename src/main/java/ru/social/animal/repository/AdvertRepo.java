@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.social.animal.model.Advert;
+import ru.social.animal.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,4 +19,6 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
             "ORDER BY a.datePublish DESC")
     List<Advert> findByFilters(@Param("cityId") Long cityId,
                                @Param("regionId") Long regionId);
+
+    List<Advert> findAllByUserOrderByDatePublishDesc(User user);
 }

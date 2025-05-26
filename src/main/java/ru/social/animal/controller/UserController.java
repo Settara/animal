@@ -10,11 +10,6 @@ public class UserController {
         return "landing";
     }
 
-    @GetMapping("/advert")
-    public String advert() {
-        return "advert";
-    }
-
     @GetMapping("/lk")
     public String lk() {
         return "lk";

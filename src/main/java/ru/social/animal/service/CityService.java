@@ -6,6 +6,7 @@ import ru.social.animal.model.City;
 import ru.social.animal.repository.CityRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService {
@@ -15,5 +16,9 @@ public class CityService {
 
     public List<City> findAll() {
         return cityRepo.findAll();
+    }
+
+    public Optional<City> findById(Long id) {
+        return cityRepo.findById(id);
     }
 }

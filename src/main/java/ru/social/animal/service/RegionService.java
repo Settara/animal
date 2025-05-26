@@ -6,6 +6,7 @@ import ru.social.animal.model.Region;
 import ru.social.animal.repository.RegionRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RegionService {
@@ -15,5 +16,9 @@ public class RegionService {
 
     public List<Region> findAll() {
         return regionRepo.findAll();
+    }
+
+    public Optional<Region> findById(Long id) {
+        return regionRepo.findById(id);
     }
 }

@@ -3,10 +3,7 @@ package ru.social.animal.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.social.animal.model.*;
 import ru.social.animal.service.*;
@@ -18,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +38,13 @@ public class AdvertController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{id}")
+    public String getAdvertById(@PathVariable Long id, Model model) {
+        Advert advert = advertService.getAdvertById(id);
+        model.addAttribute("advert", advert);
+        return "advert-details";
+    }
+
     @GetMapping("/create")
     public String showCreateAdvertPage(Model model) {
         model.addAttribute("cities", cityService.findAll());
@@ -48,30 +53,12 @@ public class AdvertController {
         return "create";
     }
 
-
-    //    @PostMapping("/add")
-//    public String createAdvert(@RequestParam String description,
-//                               @RequestParam String address,
-//                               @RequestParam String linkImage,
-//                               @RequestParam Long cityId,
-//                               @RequestParam Long regionId,
-//                               @RequestParam Long typeOfAnimalId,
-//                               Principal principal) {
-//
-//        Optional<User> userOpt = userService.findByEmail(principal.getName());
-//        if (userOpt.isEmpty()) {
-//            return "redirect:/login"; // если не найден пользователь
-//        }
-//
-//        advertService.createAdvert(description, address, linkImage, cityId, regionId, typeOfAnimalId, userOpt.get());
-//        return "redirect:/profile"; // после создания возвращаемся в профиль
-//    }
     @PostMapping("/add")
     public String addAdvert(
             @RequestParam("description") String description,
             @RequestParam("address") String address,
-            //Можно создать объявление без фото
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestParam(value = "noImage", required = false) String noImage,
             @RequestParam("cityId") Long cityId,
             @RequestParam("regionId") Long regionId,
             @RequestParam("typeOfAnimalId") Long typeOfAnimalId,
@@ -85,27 +72,81 @@ public class AdvertController {
 
         User user = userOpt.get();
 
-        // Получаем рабочую директорию приложения
-        Path workingDir = Paths.get("").toAbsolutePath();
+        // Проверка длины на сервере
+        //        if (description.length() > 500 || address.length() > 200) {
+        //            throw new IllegalArgumentException("Слишком длинное описание или адрес");
+        //        }
 
-        // Путь до папки uploads/1 внутри рабочей директории
-        File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
-        if (!uploadDir.exists()) {
-            if (!uploadDir.mkdirs()) {
+        String relativePath = null;
+
+        if (noImage == null && imageFile != null && !imageFile.isEmpty()) {
+            Path workingDir = Paths.get("").toAbsolutePath();
+            File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
+            if (!uploadDir.exists() && !uploadDir.mkdirs()) {
                 throw new IOException("Не удалось создать директорию: " + uploadDir.getAbsolutePath());
             }
+
+            File destinationFile = new File(uploadDir, imageFile.getOriginalFilename());
+            imageFile.transferTo(destinationFile);
+            relativePath = "/uploads/" + user.getId() + "/" + imageFile.getOriginalFilename();
         }
-
-        File destinationFile = new File(uploadDir, imageFile.getOriginalFilename());
-        imageFile.transferTo(destinationFile);
-
-        // Путь для доступа через браузер: /uploads/{userId}/{имя_файла}
-        String relativePath = "/uploads/" + user.getId() + "/" + imageFile.getOriginalFilename();
 
         advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, user);
         return "redirect:/tape";
     }
 
+    /** Список «Моих объявлений» */
+    @GetMapping("/my-adverts")
+    public String myAdverts(Model model, Principal principal) {
+        User user = userService.findByEmail(principal.getName()).orElseThrow();
+        List<Advert> list = advertService.getMyAdverts(user);
+        model.addAttribute("adverts", list);
+        return "my-adverts";
+    }
+
+    /** Форма редактирования одного объявления */
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model, Principal principal) {
+        Advert advert = advertService.getAdvertById(id);
+        // Можно проверить, что principal — автор объявления
+        model.addAttribute("advert", advert);
+        model.addAttribute("cities", cityService.findAll());
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("animalTypes", typeOfAnimalService.findAll());
+        return "edit-advert";
+    }
+
+    /** Обработчик сохранения изменений */
+    @PostMapping("/{id}/edit")
+    public String updateAdvert(
+            @PathVariable Long id,
+            @RequestParam String description,
+            @RequestParam String address,
+            @RequestParam(value="imageFile", required=false) MultipartFile imageFile,
+            @RequestParam Long cityId,
+            @RequestParam Long regionId,
+            @RequestParam Long typeOfAnimalId,
+            @RequestParam(value="isFound", required=false) Boolean isFound,
+            Principal principal
+    ) throws IOException {
+        Advert advert = advertService.getAdvertById(id);
+        // тут можно проверить правомочность principal
+        advert.setDescription(description);
+        advert.setAddress(address);
+        advert.setCity(cityService.findById(cityId).orElse(null));
+        advert.setRegion(regionService.findById(regionId).orElse(null));
+        advert.setTypeOfAnimal(typeOfAnimalService.findById(typeOfAnimalId).orElse(null));
+        advert.setFound(Boolean.TRUE.equals(isFound));
+
+//        // обработка нового файла, если есть…
+//        if(imageFile!=null && !imageFile.isEmpty()){
+//            String path = storageService.store(imageFile); // ваш код сохранения файла
+//            advert.setLinkImage(path);
+//        }
+
+        advertService.save(advert);
+        return "redirect:/adverts/my-adverts";
+    }
 
 }
 
