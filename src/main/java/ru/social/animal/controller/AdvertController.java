@@ -95,7 +95,7 @@ public class AdvertController {
         return "redirect:/tape";
     }
 
-    /** Список «Моих объявлений» */
+    // Список «Моих объявлений»
     @GetMapping("/my-adverts")
     public String myAdverts(Model model, Principal principal) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();
@@ -104,7 +104,7 @@ public class AdvertController {
         return "my-adverts";
     }
 
-    /** Форма редактирования одного объявления */
+    // Форма редактирования одного объявления
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, Principal principal) {
         Advert advert = advertService.getAdvertById(id);
@@ -116,7 +116,7 @@ public class AdvertController {
         return "edit-advert";
     }
 
-    /** Обработчик сохранения изменений */
+    // Обработчик сохранения изменений
     @PostMapping("/{id}/edit")
     public String updateAdvert(
             @PathVariable Long id,

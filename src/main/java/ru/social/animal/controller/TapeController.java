@@ -34,8 +34,6 @@ public class TapeController {
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("regions", regionService.findAll());
 
-
-
         return "tape";
     }
 }

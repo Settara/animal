@@ -32,14 +32,12 @@ public class Advert {
     private String address;
 
     @Column(unique = true)
-    private String linkImage; // Можно удалить, если больше не используешь
+    private String linkImage;
 
     private boolean isFound;
 
     @NotNull
     private LocalDate datePublish;
-
-    private LocalDateTime createdAt; // Новый атрибут даты и времени создания
 
     @ManyToOne
     @JoinColumn(name = "user_id")
