@@ -40,7 +40,9 @@
             <label class="form-label">Изображение</label>
             <input type="file" class="form-control" name="imageFile" accept="image/*">
             <div class="form-text" th:if="${advert.linkImage}">Текущая: <a th:href="@{${advert.linkImage}}" target="_blank">просмотреть</a></div>
+            <div class="text-danger" th:if="${imageError}" th:text="${imageError}"></div>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Город</label>
             <select class="form-select" name="cityId">

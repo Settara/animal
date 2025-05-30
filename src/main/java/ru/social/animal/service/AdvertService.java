@@ -65,6 +65,10 @@ public class AdvertService {
         return advertRepo.findAllByUserOrderByDatePublishDesc(user);
     }
 
+    public List<Advert> getAdvertsByUser(User user) {
+        return advertRepo.findAllByUserOrderByDatePublishDesc(user);
+    }
+
     public void markAsFound(Long advertId) {
         Advert a = getAdvertById(advertId);
         a.setFound(true);

@@ -23,4 +23,8 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
                                @Param("typeOfAnimal_id") Long typeOfAnimal_id);
 
     List<Advert> findAllByUserOrderByDatePublishDesc(User user);
+
+    @Query("SELECT COUNT(a) > 0 FROM Advert a WHERE a.user = :user AND a.linkImage LIKE %:fileName")
+    boolean existsByUserAndImageFileName(@Param("user") User user, @Param("fileName") String fileName);
+
 }

@@ -56,6 +56,10 @@
 </header>
 
 <div class="container mt-4">
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <form th:action="@{/adverts/add}" method="post" enctype="multipart/form-data" onsubmit="return validateForm(event)">
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
