@@ -13,7 +13,7 @@
         <h3 class="mb-0">Личный кабинет</h3>
         <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
         <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
-        <a href="/profile" class="btn btn-outline-primary active">Профиль</a>
+        <a href="/profile-view" class="btn btn-outline-primary">Профиль</a>
         <a href="/tape" class="btn btn-outline-primary"  > Лента</a>
         <a href="/" class="btn btn-outline-primary">На главную</a>
     </div>
@@ -64,6 +64,22 @@
 
                 </div>
             </div>
+
+            <!-- Форма добавления фото -->
+            <div class="card mt-4">
+                <div class="card-header">Загрузить фото профиля</div>
+                <div class="card-body">
+                    <form action="/profile/upload-image" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" name="imageFile" accept="image/*" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-info">Загрузить фото</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
             <!-- Форма смены пароля -->
             <div class="card">

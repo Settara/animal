@@ -9,8 +9,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Все URL вида /uploads/** будут обслуживаться из папки uploads/ на диске
+        // Доступ к файлам объявлений: /uploads/** → папка uploads/
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/"); // uploads/ - это путь в файловой системе (относительный к корню проекта)
+                .addResourceLocations("file:uploads/");
+
+        // Доступ к фото пользователей: /user-images/** → папка user-images/
+        registry.addResourceHandler("/user-images/**")
+                .addResourceLocations("file:user-images/");
     }
 }

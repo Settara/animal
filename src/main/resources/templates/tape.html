@@ -12,11 +12,12 @@
         <h3 class="mb-0">Лента объявлений</h3>
         <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
         <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
-        <a href="/profile" class="btn btn-outline-primary">Профиль</a>
-        <a href="/tape" class="btn btn-outline-primary active"  > Лента</a>
+        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
+        <a href="/tape" class="btn btn-outline-primary active">Лента</a>
         <a href="/" class="btn btn-outline-primary">На главную</a>
     </div>
 </header>
+
 
 <div class="container mt-4">
 

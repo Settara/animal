@@ -62,7 +62,9 @@ public class AdvertController {
     }
 
     @GetMapping("/create")
-    public String showCreateAdvertPage(Model model) {
+    public String showCreateAdvertPage(Model model, Principal principal) {
+        User user = userService.findByEmail(principal.getName()).orElseThrow();
+        model.addAttribute("user", user);
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("regions", regionService.findAll());
         model.addAttribute("animalTypes", typeOfAnimalService.findAll());
@@ -121,17 +123,26 @@ public class AdvertController {
     // Список «Моих объявлений»
     @GetMapping("/my-adverts")
     public String myAdverts(Model model, Principal principal) {
+
         User user = userService.findByEmail(principal.getName()).orElseThrow();
+        model.addAttribute("user", user);
+
+        //User user = userService.findByEmail(principal.getName()).orElseThrow();
         List<Advert> list = advertService.getMyAdverts(user);
         model.addAttribute("adverts", list);
+
         return "my-adverts";
     }
 
     // Форма редактирования одного объявления
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, Principal principal) {
+
+        User user = userService.findByEmail(principal.getName()).orElseThrow();
+        model.addAttribute("user", user);
+
         Advert advert = advertService.getAdvertById(id);
-        // Можно проверить, что principal — автор объявления
+
         model.addAttribute("advert", advert);
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("regions", regionService.findAll());
@@ -200,6 +211,22 @@ public class AdvertController {
         advertService.save(advert);
         return "redirect:/adverts/my-adverts";
     }
+
+    @GetMapping("/profile-view")
+    public String viewProfile(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Optional<User> userOpt = userService.findByEmail(principal.getName());
+        if (userOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", userOpt.get());
+        return "profile-view";
+    }
+
 
 
 }

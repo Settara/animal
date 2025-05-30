@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<header class="bg-white shadow-sm p-3 mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Профиль</h3>
+        <a href="/profile" class="btn btn-outline-primary">Редактировать профиль</a>
+        <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+        <a href="/tape" class="btn btn-outline-primary">Лента</a>
+        <a href="/" class="btn btn-outline-primary">Главная</a>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <div class="row">
+<!--        <div class="col-md-4">-->
+<!--            <img th:src="${user.imageProfile != null ? user.imageProfile : '/default-avatar.png'}"-->
+<!--                 class="img-fluid rounded" alt="Фото профиля">-->
+<!--        </div>-->
+        <div class="col-md-4">
+            <!-- Если есть изображение, показываем его -->
+            <div th:if="${user.imageProfile != null and !user.imageProfile.isEmpty()}">
+                <img th:src="@{${user.imageProfile}}" class="img-fluid rounded-start" alt="Фото животного">
+            </div>
+            <!-- Если изображения нет, показываем заглушку -->
+            <div th:if="${user.imageProfile == null or user.imageProfile.isEmpty()}"
+                 class="d-flex align-items-center justify-content-center bg-secondary text-white"
+                 style="height: 100%; min-height: 200px;">
+                Нет фото
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h4 th:text="${user.firstName + ' ' + user.secondName}"></h4>
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Телефон:</strong> <span th:text="${user.phone}"></span></p>
+            <p><strong>Пол:</strong> <span th:text="${user.sex}"></span></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
