@@ -47,6 +47,8 @@
                     <p th:text="'Фамилия: ' + ${advert.user.secondName}"></p>
                     <p th:text="'Email: ' + ${advert.user.email}"></p>
                     <p th:text="'Телефон: ' + ${advert.user.phone}"></p>
+                    <a th:href="@{/profile/{id}(id=${advert.user.id})}" class="btn btn-primary mt-3">Перейти на профиль</a>
+
                 </div>
             </div>
         </div>

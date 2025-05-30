@@ -23,7 +23,7 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
-    // ✅ Редактирование своего профиля по Principal
+    // Редактирование своего профиля по Principal
     @GetMapping
     public String editProfile(Model model, Principal principal) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();
@@ -31,7 +31,7 @@ public class ProfileController {
         return "profile"; // profile.html — страница редактирования
     }
 
-    // ✅ Отображение профиля по ID (доступен всем)
+    // Отображение профиля по ID (доступен всем)
     @GetMapping("/{id}")
     public String viewProfile(@PathVariable Long id, Model model) {
         User user = userService.findById(id).orElseThrow();
@@ -39,7 +39,7 @@ public class ProfileController {
         return "profile-view"; // profile-view.html — просмотр профиля
     }
 
-    // ✅ Обновление данных
+    // Обновление данных
     @PostMapping("/update")
     public String updateProfile(@ModelAttribute RegisterUserDto dto, Principal principal) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();
@@ -47,7 +47,7 @@ public class ProfileController {
         return "redirect:/profile/" + user.getId(); // После сохранения — на просмотр
     }
 
-    // ✅ Смена пароля
+    // Смена пароля
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String oldPassword,
                                  @RequestParam String newPassword,
@@ -70,7 +70,7 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-    // ✅ Загрузка фото профиля
+    // Загрузка фото профиля
     @PostMapping("/upload-image")
     public String uploadProfileImage(@RequestParam("imageFile") MultipartFile file, Principal principal) throws IOException {
         if (file != null && !file.isEmpty()) {
