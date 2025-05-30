@@ -14,11 +14,13 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
     List<Advert> findAllByOrderByDatePublishDesc();
 
     @Query("SELECT a FROM Advert a WHERE " +
-            "(:cityId IS NULL OR a.city.id = :cityId) AND " +
-            "(:regionId IS NULL OR a.region.id = :regionId)" +
+            "(:city_id IS NULL OR a.city.id = :city_id) AND " +
+            "(:region_id IS NULL OR a.region.id = :region_id) AND " +
+            "(:typeOfAnimal_id IS NULL OR a.typeOfAnimal.id = :typeOfAnimal_id)" +
             "ORDER BY a.datePublish DESC")
-    List<Advert> findByFilters(@Param("cityId") Long cityId,
-                               @Param("regionId") Long regionId);
+    List<Advert> findByFilters(@Param("city_id") Long city_id,
+                               @Param("region_id") Long region_id,
+                               @Param("typeOfAnimal_id") Long typeOfAnimal_id);
 
     List<Advert> findAllByUserOrderByDatePublishDesc(User user);
 }

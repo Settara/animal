@@ -52,6 +52,6 @@ public class Advert {
     private Region region;
 
     @ManyToOne
-    @JoinColumn(name = "type_of_animal_id")
+    @JoinColumn(name = "typeOfAnimal_id")
     private TypeOfAnimal typeOfAnimal;
 }

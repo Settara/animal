@@ -48,11 +48,12 @@ public class AdvertService {
         advertRepo.save(advert);
     }
 
-    public List<Advert> getFilteredAdverts(Long cityId, Long regionId) {
-        if (cityId == null && regionId == null) {
+    public List<Advert> getFilteredAdverts(Long cityId, Long regionId, Long typeOfAnimalId) {
+        if (cityId == null && regionId == null && typeOfAnimalId == null) {
             return advertRepo.findAllByOrderByDatePublishDesc(); // все по убыванию даты
         }
-        return advertRepo.findByFilters(cityId, regionId);
+
+        return advertRepo.findByFilters(cityId, regionId, typeOfAnimalId);
     }
 
     public Advert getAdvertById(Long id) {

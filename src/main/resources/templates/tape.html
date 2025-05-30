@@ -36,6 +36,13 @@
                 <option th:each="region : ${regions}" th:value="${region.id}" th:text="${region.title}"></option>
             </select>
         </div>
+        <div class="col-md-3">
+            <label class="form-label">Тип животного</label>
+            <select class="form-select" name="typeOfAnimalId">
+                <option value="">Все типы</option>
+                <option th:each="typeOfAnimal : ${animalTypes}" th:value="${typeOfAnimal.id}" th:text="${typeOfAnimal.title}"></option>
+            </select>
+        </div>
         <div class="col-md-3 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100">Применить фильтр</button>
         </div>
