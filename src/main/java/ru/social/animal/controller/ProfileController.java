@@ -41,11 +41,21 @@ public class ProfileController {
 
     // Обновление данных
     @PostMapping("/update")
-    public String updateProfile(@ModelAttribute RegisterUserDto dto, Principal principal) {
+    public String updateProfile(@ModelAttribute RegisterUserDto dto,
+                                Principal principal,
+                                RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();
-        userService.updateUser(user, dto);
-        return "redirect:/profile/" + user.getId(); // После сохранения — на просмотр
+
+        try {
+            userService.updateUser(user, dto);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/profile";
+        }
+
+        return "redirect:/profile/" + user.getId();
     }
+
 
     // Смена пароля
     @PostMapping("/change-password")

@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<User, Long> {
     //Тут использовать аннотацию @Query
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByPhone(String phone);
 }

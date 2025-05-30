@@ -80,6 +80,10 @@
                 </div>
             </div>
 
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
 
             <!-- Форма смены пароля -->
             <div class="card">
