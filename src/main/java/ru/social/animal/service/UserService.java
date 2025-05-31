@@ -42,7 +42,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
         user.setSex(dto.getSex());
-        user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+        user.setPassword(dto.getPassword());
 
         return userRepo.save(user);
     }
