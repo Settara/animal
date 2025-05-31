@@ -8,14 +8,17 @@
 <body class="bg-light">
 
 <header class="bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">Профиль</h3>
-        <a href="/profile" class="btn btn-outline-primary">Редактировать профиль</a>
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="mb-0">Личный кабинет</h3>
+        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
+        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
         <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary active">Профиль</a>
         <a href="/tape" class="btn btn-outline-primary">Лента</a>
-        <a href="/" class="btn btn-outline-primary">Главная</a>
+        <a href="/" class="btn btn-outline-primary">На главную</a>
     </div>
 </header>
+
 
 <div class="container mt-4">
     <div class="row">
@@ -38,6 +41,26 @@
             <p><strong>Телефон:</strong> <span th:text="${user.phone}"></span></p>
             <p><strong>Пол:</strong> <span th:text="${user.sex}"></span></p>
         </div>
+
+        <div class="container mt-4">
+            <h4>Посты пользователя</h4>
+            <div class="row" th:each="post : ${posts}">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text" th:text="${post.description}"></p>
+                        <div class="d-flex gap-2">
+                            <img th:if="${post.linkImageFirst}" th:src="@{${post.linkImageFirst}}" style="height: 150px;">
+                            <img th:if="${post.linkImageSecond}" th:src="@{${post.linkImageSecond}}" style="height: 150px;">
+                            <img th:if="${post.linkImageThird}" th:src="@{${post.linkImageThird}}" style="height: 150px;">
+                        </div>
+                        <p class="text-muted mt-2" th:text="'Опубликовано: ' + ${post.datePublish}"></p>
+                        <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-outline-primary btn-sm mt-2">Открыть</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 

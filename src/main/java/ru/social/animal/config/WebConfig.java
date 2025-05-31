@@ -16,5 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
         // Доступ к фото пользователей: /user-images/** → папка user-images/
         registry.addResourceHandler("/user-images/**")
                 .addResourceLocations("file:user-images/");
+
+        // Доступ к фото постов пользователей: /user-images/** → папка user-images/
+        registry.addResourceHandler("/user-posts/**")
+                .addResourceLocations("file:user-posts/");
     }
 }

@@ -36,6 +36,10 @@ public class UserService {
             throw new IllegalArgumentException("Пользователь с таким номером телефона уже существует");
         }
 
+        if (userExistsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Пользователь с такой электронной почтой уже существует");
+        }
+
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setSecondName(dto.getSecondName());

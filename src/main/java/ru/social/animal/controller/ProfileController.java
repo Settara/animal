@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.social.animal.dto.RegisterUserDto;
 import ru.social.animal.model.User;
+import ru.social.animal.service.PostService;
 import ru.social.animal.service.UserService;
 
 import java.io.File;
@@ -23,6 +24,9 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PostService postService;
+
     // Редактирование своего профиля по Principal
     @GetMapping
     public String editProfile(Model model, Principal principal) {
@@ -31,11 +35,11 @@ public class ProfileController {
         return "profile"; // profile.html — страница редактирования
     }
 
-    // Отображение профиля по ID (доступен всем)
     @GetMapping("/{id}")
     public String viewProfile(@PathVariable Long id, Model model) {
         User user = userService.findById(id).orElseThrow();
         model.addAttribute("user", user);
+        model.addAttribute("posts", postService.findAllByUser(user));
         return "profile-view"; // profile-view.html — просмотр профиля
     }
 
