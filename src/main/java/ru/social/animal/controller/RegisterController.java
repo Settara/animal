@@ -36,15 +36,23 @@ public class RegisterController {
             return "register";
         }
 
-        if (userService.userExistsByEmail(registerUserDto.getEmail())) {
-            model.addAttribute("account", "Пользователь с таким email уже зарегистрирован.");
+        boolean emailExists = userService.userExistsByEmail(registerUserDto.getEmail());
+        boolean phoneExists = userService.userExistsByPhone(registerUserDto.getPhone());
+
+        if (emailExists || phoneExists) {
+            if (emailExists) {
+                model.addAttribute("emailExistsError", "Пользователь с таким email уже зарегистрирован.");
+            }
+            if (phoneExists) {
+                model.addAttribute("phoneExistsError", "Пользователь с таким номером телефона уже зарегистрирован.");
+            }
             return "register";
         }
 
         registerUserDto.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
-
         userService.registerNewUser(registerUserDto);
 
         return "redirect:/login";
     }
+
 }

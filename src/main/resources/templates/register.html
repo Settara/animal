@@ -17,6 +17,14 @@
 <main class="container mt-5 pt-5 d-flex flex-column align-items-center">
     <div class="card shadow-sm p-4 w-100" style="max-width: 400px;">
         <h1 class="mb-4 text-center">Регистрация</h1>
+
+        <div th:if="${emailExistsError}" class="alert alert-danger" role="alert">
+            <span th:text="${emailExistsError}"></span>
+        </div>
+        <div th:if="${phoneExistsError}" class="alert alert-danger" role="alert">
+            <span th:text="${phoneExistsError}"></span>
+        </div>
+
         <form th:action="@{/register}" th:object="${user}" method="POST">
 
             <div class="mb-3">
