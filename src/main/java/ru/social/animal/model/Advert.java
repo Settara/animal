@@ -36,6 +36,8 @@ public class Advert {
 
     private boolean isFound;
 
+    private boolean giveAway;
+
     @NotNull
     private LocalDate datePublish;
 

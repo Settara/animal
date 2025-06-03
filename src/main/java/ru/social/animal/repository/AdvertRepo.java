@@ -14,6 +14,7 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
     List<Advert> findAllByOrderByDatePublishDesc();
 
     @Query("SELECT a FROM Advert a WHERE " +
+            "a.giveAway = false AND " +
             "(:city_id IS NULL OR a.city.id = :city_id) AND " +
             "(:region_id IS NULL OR a.region.id = :region_id) AND " +
             "(:typeOfAnimal_id IS NULL OR a.typeOfAnimal.id = :typeOfAnimal_id)" +
@@ -23,6 +24,17 @@ public interface AdvertRepo extends JpaRepository<Advert, Long> {
                                @Param("typeOfAnimal_id") Long typeOfAnimal_id);
 
     List<Advert> findAllByUserOrderByDatePublishDesc(User user);
+
+    @Query("SELECT a FROM Advert a WHERE " +
+            "a.giveAway = true AND " +
+            "(:cityId IS NULL OR a.city.id = :cityId) AND " +
+            "(:regionId IS NULL OR a.region.id = :regionId) AND " +
+            "(:typeOfAnimalId IS NULL OR a.typeOfAnimal.id = :typeOfAnimalId) " +
+            "ORDER BY a.datePublish DESC")
+    List<Advert> findGiveAwayAdvertsWithFilters(@Param("cityId") Long cityId,
+                                                @Param("regionId") Long regionId,
+                                                @Param("typeOfAnimalId") Long typeOfAnimalId);
+
 
     @Query("SELECT COUNT(a) > 0 FROM Advert a WHERE a.user = :user AND a.linkImage LIKE %:fileName")
     boolean existsByUserAndImageFileName(@Param("user") User user, @Param("fileName") String fileName);

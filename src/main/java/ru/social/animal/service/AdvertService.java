@@ -28,13 +28,15 @@ public class AdvertService {
     private TypeOfAnimalRepo typeOfAnimalRepo;
 
     public void createAdvert(String description, String address, String linkImage,
-                             Long cityId, Long regionId, Long typeOfAnimalId, User user) {
+                             Long cityId, Long regionId, Long typeOfAnimalId,
+                             boolean giveAway, User user) {
 
         Advert advert = new Advert();
         advert.setDescription(description);
         advert.setAddress(address);
         advert.setLinkImage(linkImage);
         advert.setFound(false);
+        advert.setGiveAway(giveAway); // <-- добавлено
         advert.setDatePublish(LocalDate.now());
         advert.setUser(user);
         advert.setCity(cityRepo.findById(cityId).orElse(null));
@@ -43,6 +45,7 @@ public class AdvertService {
 
         advertRepo.save(advert);
     }
+
 
     public void save(Advert advert) {
         advertRepo.save(advert);
@@ -74,4 +77,9 @@ public class AdvertService {
         a.setFound(true);
         advertRepo.save(a);
     }
+
+    public List<Advert> getFilteredGiveAwayAdverts(Long cityId, Long regionId, Long typeOfAnimalId) {
+        return advertRepo.findGiveAwayAdvertsWithFilters(cityId, regionId, typeOfAnimalId);
+    }
+
 }

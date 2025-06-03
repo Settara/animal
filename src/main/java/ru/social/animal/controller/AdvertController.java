@@ -80,6 +80,7 @@ public class AdvertController {
             @RequestParam("cityId") Long cityId,
             @RequestParam("regionId") Long regionId,
             @RequestParam("typeOfAnimalId") Long typeOfAnimalId,
+            @RequestParam(value = "giveAway", defaultValue = "false") boolean giveAway,
             Model model,
             Principal principal
     ) throws IOException {
@@ -115,7 +116,7 @@ public class AdvertController {
             relativePath = "/uploads/" + user.getId() + "/" + fileName;
         }
 
-        advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, user);
+        advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, giveAway, user);
         return "redirect:/tape";
     }
 
