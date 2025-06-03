@@ -11,11 +11,6 @@
             win.document.title = "Фото животного";
         }
     </script>
-    <style>
-        .img-fluid {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body class="bg-light">
 
@@ -32,9 +27,11 @@
         <div class="row g-0">
             <div class="col-md-4">
                 <div th:if="${advert.linkImage != null and !advert.linkImage.isEmpty()}">
-                    <img th:src="@{${advert.linkImage}}" class="img-fluid rounded-start"
-                         alt="Фото животного"
-                         th:onclick="'openImageFullscreen(\'' + @{${advert.linkImage}} + '\')'">
+                    <img th:src="@{${advert.linkImage}}" class="img-fluid rounded-start" alt="Фото животного">
+                    <button class="btn btn-outline-primary mt-2 w-100"
+                            th:onclick="'openImageFullscreen(\'' + @{${advert.linkImage}} + '\')'">
+                        Посмотреть фото
+                    </button>
                 </div>
                 <div th:if="${advert.linkImage == null or advert.linkImage.isEmpty()}"
                      class="d-flex align-items-center justify-content-center bg-secondary text-white"
@@ -66,6 +63,7 @@
         </div>
     </div>
 
+    <!-- Назад к ленте в зависимости от giveAway -->
     <a th:href="${advert.giveAway} ? '/giveaway' : '/tape'" class="btn btn-secondary mt-3">← Назад к ленте</a>
 </div>
 

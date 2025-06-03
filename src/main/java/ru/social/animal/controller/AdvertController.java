@@ -228,6 +228,29 @@ public class AdvertController {
         return "profile-view";
     }
 
+    @GetMapping("/giveaway")
+    public String giveawayAdverts(
+            @RequestParam(value = "cityId", required = false) Long cityId,
+            @RequestParam(value = "regionId", required = false) Long regionId,
+            @RequestParam(value = "typeOfAnimalId", required = false) Long typeOfAnimalId,
+            Model model,
+            Principal principal
+    ) {
+        if (principal != null) {
+            userService.findByEmail(principal.getName()).ifPresent(user -> model.addAttribute("user", user));
+        }
+
+        model.addAttribute("cities", cityService.findAll());
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("animalTypes", typeOfAnimalService.findAll());
+
+        List<Advert> adverts = advertService.getFilteredGiveAwayAdverts(cityId, regionId, typeOfAnimalId);
+        model.addAttribute("adverts", adverts);
+
+        return "giveaway";
+    }
+
+
 
 
 }

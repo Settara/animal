@@ -92,15 +92,16 @@
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email"
+                <input type="text"
                        class="form-control"
                        th:field="*{email}"
+                       name="email"
                        required
-                       maxlength="50"
+                       maxlength="30"
                        minlength="5"
                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                        title="Введите корректный email, например example@mail.ru">
-                <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
             </div>
 
             <div class="mb-3">
@@ -114,7 +115,7 @@
                        title="Минимум 6 символов">
                 <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
-a
+
             <div class="mb-3">
                 <label class="form-label">Телефон</label>
                 <input type="tel"

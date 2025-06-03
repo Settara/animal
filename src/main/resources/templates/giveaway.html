@@ -55,8 +55,9 @@
     <div class="row">
         <div class="col-12"
              th:each="advert : ${adverts}"
-             th:if="${!advert.found}">
-            <div class="card mb-4 shadow d-flex flex-row overflow-hidden">
+             th:if="${!advert.found and advert.giveAway}">
+
+        <div class="card mb-4 shadow d-flex flex-row overflow-hidden">
 
                 <!-- Изображение слева или текст -->
                 <div class="flex-shrink-0" style="width: 300px; height: 100%;">
