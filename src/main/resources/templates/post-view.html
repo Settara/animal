@@ -2,33 +2,82 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Пост</title>
     <title th:text="'Пост #' + ${post.id}">Пост</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .post-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .post-card img {
+            border-radius: 10px;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+            max-height: 300px;
+            cursor: pointer;
+        }
+
+        .post-card .btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .post-card .btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        function openImageFullscreen(imageUrl) {
+            const win = window.open();
+            win.document.write('<img src="' + imageUrl + '" style="width:100%;height:100%;object-fit:contain;">');
+            win.document.title = "Фото";
+        }
+    </script>
 </head>
 <body class="bg-light">
 
-<div class="container mt-4">
-
-    <h2 th:text="'Пост #' + ${post.id}">Пост</h2>
-<!--    <p><strong>Автор:</strong> <span th:text="${post.user.name}">Имя</span></p>-->
-    <p><strong>Дата публикации:</strong> <span th:text="${post.datePublish}">Дата</span></p>
-    <p><strong>Описание:</strong></p>
-    <p th:text="${post.description}">Описание</p>
-
-    <div class="row">
-        <div class="col-md-4" th:if="${post.linkImageFirst}">
-            <img th:src="@{${post.linkImageFirst}}" class="img-fluid rounded mb-3" alt="Изображение 1">
-        </div>
-        <div class="col-md-4" th:if="${post.linkImageSecond}">
-            <img th:src="@{${post.linkImageSecond}}" class="img-fluid rounded mb-3" alt="Изображение 2">
-        </div>
-        <div class="col-md-4" th:if="${post.linkImageThird}">
-            <img th:src="@{${post.linkImageThird}}" class="img-fluid rounded mb-3" alt="Изображение 3">
-        </div>
+<header class="bg-white shadow-sm p-3 mb-4">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="mb-0">Просмотр поста</h3>
+        <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
+        <a href="/tape" class="btn btn-outline-primary active">Лента</a>
+        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
+        <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
+        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
+        <a href="/" class="btn btn-outline-primary">На главную</a>
     </div>
+</header>
 
-    <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary active">Назад к профилю</a>
+<div class="container">
+    <div class="post-card">
+        <h2 class="mb-3" th:text="'Пост #' + ${post.id}">Пост</h2>
+        <p><strong>Дата публикации:</strong> <span th:text="${post.datePublish}">Дата</span></p>
+        <p><strong>Описание:</strong></p>
+        <p th:text="${post.description}">Описание</p>
+
+        <div class="row g-3">
+            <div class="col-md-4" th:if="${post.linkImageFirst}">
+                <img th:src="@{${post.linkImageFirst}}" alt="Изображение 1"
+                     th:onclick="'openImageFullscreen(\'' + @{${post.linkImageFirst}} + '\')'">
+            </div>
+            <div class="col-md-4" th:if="${post.linkImageSecond}">
+                <img th:src="@{${post.linkImageSecond}}" alt="Изображение 2"
+                     th:onclick="'openImageFullscreen(\'' + @{${post.linkImageSecond}} + '\')'">
+            </div>
+            <div class="col-md-4" th:if="${post.linkImageThird}">
+                <img th:src="@{${post.linkImageThird}}" alt="Изображение 3"
+                     th:onclick="'openImageFullscreen(\'' + @{${post.linkImageThird}} + '\')'">
+            </div>
+        </div>
+
+        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary mt-5">Назад к профилю</a>
+    </div>
 </div>
+
 </body>
 </html>

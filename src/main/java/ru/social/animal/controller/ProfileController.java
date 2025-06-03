@@ -81,6 +81,7 @@ public class ProfileController {
             redirectAttributes.addFlashAttribute("error", "Старый пароль неверен");
         }
 
+        redirectAttributes.addFlashAttribute("passwordChanged", true);
         return "redirect:/profile";
     }
 

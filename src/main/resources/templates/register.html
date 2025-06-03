@@ -6,6 +6,55 @@
     <title>Регистрация</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        Inputmask({
+            mask: "+7 (999) 999-99-99",
+            showMaskOnHover: false,
+            clearIncomplete: true
+        }).mask(document.querySelector('input[name="phone"]'));
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        Inputmask({
+            mask: "+7 (999) 999-99-99",
+            showMaskOnHover: false,
+            showMaskOnFocus: true,
+            clearIncomplete: false,
+            autoUnmask: false,
+            placeholder: "_"
+        }).mask(document.querySelector('input[name="phone"]'));
+
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function (event) {
+            form.querySelectorAll("input").forEach(input => {
+                if (!input.checkValidity()) {
+                    input.classList.add("is-invalid");
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    input.classList.remove("is-invalid");
+                }
+            });
+        });
+
+        document.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", () => {
+                if (input.checkValidity()) {
+                    input.classList.remove("is-invalid");
+                }
+            });
+        });
+    });
+</script>
+
+
 <body class="bg-light d-flex flex-column align-items-center justify-content-center min-vh-100">
 
 <header class="fixed-top bg-white border-bottom shadow-sm w-100 py-3">
@@ -25,35 +74,58 @@
             <span th:text="${phoneExistsError}"></span>
         </div>
 
+        <!-- ... HEAD и скрипты без изменений -->
+
         <form th:action="@{/register}" th:object="${user}" method="POST">
 
             <div class="mb-3">
                 <label class="form-label">Имя</label>
-                <input type="text" class="form-control" th:field="*{firstName}" required>
+                <input type="text" class="form-control" th:field="*{firstName}" required maxlength="30" minlength="2">
                 <div class="text-danger small" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Фамилия</label>
-                <input type="text" class="form-control" th:field="*{secondName}" required>
+                <input type="text" class="form-control" th:field="*{secondName}" required maxlength="30" minlength="2">
                 <div class="text-danger small" th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-control" th:field="*{email}" required>
+                <input type="email"
+                       class="form-control"
+                       th:field="*{email}"
+                       required
+                       maxlength="50"
+                       minlength="5"
+                       pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                       title="Введите корректный email, например example@mail.ru">
                 <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Пароль</label>
-                <input type="password" class="form-control" th:field="*{password}" required>
+                <input type="password"
+                       class="form-control"
+                       th:field="*{password}"
+                       required
+                       maxlength="30"
+                       minlength="6"
+                       title="Минимум 6 символов">
                 <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
-
+a
             <div class="mb-3">
                 <label class="form-label">Телефон</label>
-                <input type="tel" class="form-control" th:field="*{phone}" required>
+                <input type="tel"
+                       class="form-control"
+                       th:field="*{phone}"
+                       name="phone"
+                       required
+                       inputmode="numeric"
+                       placeholder="+7 (___) ___-__-__"
+                       maxlength="18"
+                       title="Формат: +7 (XXX) XXX-XX-XX">
                 <div class="text-danger small" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
             </div>
 
@@ -75,6 +147,7 @@
                 <a th:href="@{/login}" class="text-decoration-none">Уже есть аккаунт? Войти</a>
             </div>
         </form>
+
     </div>
 
     <a href="/" class="btn btn-outline-primary mt-4">Вернуться на главную страницу</a>

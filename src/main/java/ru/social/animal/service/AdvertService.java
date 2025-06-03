@@ -79,6 +79,9 @@ public class AdvertService {
     }
 
     public List<Advert> getFilteredGiveAwayAdverts(Long cityId, Long regionId, Long typeOfAnimalId) {
+        if (cityId == null && regionId == null && typeOfAnimalId == null) {
+            return advertRepo.findAllByOrderByDatePublishDesc(); // все по убыванию даты
+        }
         return advertRepo.findGiveAwayAdvertsWithFilters(cityId, regionId, typeOfAnimalId);
     }
 

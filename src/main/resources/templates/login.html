@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,17 +17,37 @@
     <div class="card mx-auto shadow-sm" style="max-width: 400px;">
         <div class="card-body text-center">
             <h1 class="mb-4">Вход</h1>
+
+            <!-- Блок ошибки -->
+            <div th:if="${loginError}" class="alert alert-danger" role="alert" th:text="${loginError}"></div>
+
             <form action="/login" method="POST">
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label">Введите Email</label>
-                    <input type="email" class="form-control" id="email" name="username" required>
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="username"
+                           required
+                           maxlength="50"
+                           minlength="5"
+                           pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                           title="Введите корректный email, например: user@example.com">
                 </div>
                 <div class="mb-4 text-start">
                     <label for="password" class="form-label">Введите пароль</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           name="password"
+                           required
+                           maxlength="30"
+                           minlength="6"
+                           title="Минимум 6 символов">
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
             </form>
+
             <a href="/register">Регистрация</a>
         </div>
     </div>
@@ -35,5 +55,6 @@
         <a href="/" class="btn btn-primary">Вернуться на главную страницу</a>
     </div>
 </main>
+
 </body>
 </html>
