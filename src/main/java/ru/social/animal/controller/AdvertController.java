@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,7 +66,11 @@ public class AdvertController {
     public String showCreateAdvertPage(Model model, Principal principal) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();
         model.addAttribute("user", user);
-        model.addAttribute("cities", cityService.findAll());
+
+        List<City> cities = cityService.findAll();
+        cities.sort(Comparator.comparing(City::getTitle)); // Сортировка
+
+        model.addAttribute("cities", cities);
         model.addAttribute("regions", regionService.findAll());
         model.addAttribute("animalTypes", typeOfAnimalService.findAll());
         return "create";
@@ -78,7 +83,6 @@ public class AdvertController {
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             @RequestParam(value = "noImage", required = false) String noImage,
             @RequestParam("cityId") Long cityId,
-            @RequestParam("regionId") Long regionId,
             @RequestParam("typeOfAnimalId") Long typeOfAnimalId,
             @RequestParam(value = "giveAway", defaultValue = "false") boolean giveAway,
             Model model,
@@ -96,15 +100,21 @@ public class AdvertController {
         if (noImage == null && imageFile != null && !imageFile.isEmpty()) {
             String fileName = imageFile.getOriginalFilename();
 
-            // Проверка, есть ли уже файл с таким именем у пользователя
-            if (advertRepo.existsByUserAndImageFileName(user, fileName)) {
-                model.addAttribute("errorMessage", "У вас уже есть объявление с таким изображением: " + fileName);
-                model.addAttribute("cities", cityRepo.findAll());
-                model.addAttribute("regions", regionRepo.findAll());
-                model.addAttribute("animalTypes", typeOfAnimalRepo.findAll());
-                return "create";
+            // Проверка: есть ли у пользователя объявление с таким изображением
+            List<Advert> existingAdverts = advertService.getAdvertsByUser(user);
+            for (Advert advert : existingAdverts) {
+                String imagePath = advert.getLinkImage();
+                if (imagePath != null && imagePath.endsWith("/" + fileName)) {
+                    model.addAttribute("errorMessage", "Вы уже создавали объявление с этим животным. Пожалуйста, загрузите другое фото.");
+                    model.addAttribute("cities", cityRepo.findAll());
+                    model.addAttribute("regions", regionRepo.findAll());
+                    model.addAttribute("animalTypes", typeOfAnimalRepo.findAll());
+                    model.addAttribute("user", user);
+                    return "create";
+                }
             }
 
+            // сохраняем файл
             Path workingDir = Paths.get("").toAbsolutePath();
             File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
             if (!uploadDir.exists() && !uploadDir.mkdirs()) {
@@ -116,7 +126,8 @@ public class AdvertController {
             relativePath = "/uploads/" + user.getId() + "/" + fileName;
         }
 
-        advertService.createAdvert(description, address, relativePath, cityId, regionId, typeOfAnimalId, giveAway, user);
+
+        advertService.createAdvert(description, address, relativePath, cityId, typeOfAnimalId, giveAway, user);
         return "redirect:/tape";
     }
 
@@ -138,30 +149,30 @@ public class AdvertController {
     // Форма редактирования одного объявления
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, Principal principal) {
-
         User user = userService.findByEmail(principal.getName()).orElseThrow();
         model.addAttribute("user", user);
 
         Advert advert = advertService.getAdvertById(id);
-
         model.addAttribute("advert", advert);
-        model.addAttribute("cities", cityService.findAll());
+
+        List<City> cities = cityService.findAll();
+        cities.sort(Comparator.comparing(City::getTitle)); // Сортировка
+
+        model.addAttribute("cities", cities);
         model.addAttribute("regions", regionService.findAll());
         model.addAttribute("animalTypes", typeOfAnimalService.findAll());
         return "edit-advert";
     }
 
-    // Обработчик сохранения изменений
     @PostMapping("/{id}/edit")
     public String updateAdvert(
             @PathVariable Long id,
             @RequestParam String description,
             @RequestParam String address,
-            @RequestParam(value="imageFile", required=false) MultipartFile imageFile,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             @RequestParam Long cityId,
-            @RequestParam Long regionId,
             @RequestParam Long typeOfAnimalId,
-            @RequestParam(value="isFound", required=false) Boolean isFound,
+            @RequestParam(value = "isFound", required = false) Boolean isFound,
             Model model,
             Principal principal
     ) throws IOException {
@@ -174,13 +185,18 @@ public class AdvertController {
 
         advert.setDescription(description);
         advert.setAddress(address);
-        advert.setCity(cityService.findById(cityId).orElse(null));
-        advert.setRegion(regionService.findById(regionId).orElse(null));
+
+        City city = cityService.findById(cityId).orElse(null);
+        advert.setCity(city);
+
+        if (city != null) {
+            advert.setRegion(city.getRegion()); // <-- автоматическое определение региона
+        }
+
         advert.setTypeOfAnimal(typeOfAnimalService.findById(typeOfAnimalId).orElse(null));
         advert.setFound(Boolean.TRUE.equals(isFound));
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            // Проверка: уже есть файл с таким именем в другом объявлении пользователя?
             List<Advert> userAdverts = advertService.getAdvertsByUser(user);
             for (Advert otherAdvert : userAdverts) {
                 if (!otherAdvert.getId().equals(id) &&
@@ -188,14 +204,12 @@ public class AdvertController {
                         otherAdvert.getLinkImage().endsWith("/" + imageFile.getOriginalFilename())) {
                     model.addAttribute("advert", advert);
                     model.addAttribute("cities", cityService.findAll());
-                    model.addAttribute("regions", regionService.findAll());
                     model.addAttribute("animalTypes", typeOfAnimalService.findAll());
                     model.addAttribute("imageError", "У вас уже есть объявление с такой фотографией.");
                     return "edit-advert";
                 }
             }
 
-            // Сохраняем новый файл
             Path workingDir = Paths.get("").toAbsolutePath();
             File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
             if (!uploadDir.exists() && !uploadDir.mkdirs()) {
@@ -212,6 +226,7 @@ public class AdvertController {
         advertService.save(advert);
         return "redirect:/adverts/my-adverts";
     }
+
 
     @GetMapping("/profile-view")
     public String viewProfile(Model model, Principal principal) {
@@ -249,9 +264,6 @@ public class AdvertController {
 
         return "giveaway";
     }
-
-
-
 
 }
 

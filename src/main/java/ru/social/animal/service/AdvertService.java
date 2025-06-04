@@ -3,6 +3,7 @@ package ru.social.animal.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.social.animal.model.Advert;
+import ru.social.animal.model.City;
 import ru.social.animal.model.User;
 import ru.social.animal.repository.AdvertRepo;
 import ru.social.animal.repository.CityRepo;
@@ -28,7 +29,7 @@ public class AdvertService {
     private TypeOfAnimalRepo typeOfAnimalRepo;
 
     public void createAdvert(String description, String address, String linkImage,
-                             Long cityId, Long regionId, Long typeOfAnimalId,
+                             Long cityId, Long typeOfAnimalId,
                              boolean giveAway, User user) {
 
         Advert advert = new Advert();
@@ -40,7 +41,12 @@ public class AdvertService {
         advert.setDatePublish(LocalDate.now());
         advert.setUser(user);
         advert.setCity(cityRepo.findById(cityId).orElse(null));
-        advert.setRegion(regionRepo.findById(regionId).orElse(null));
+
+        // Автоматически определяем регион из города
+        City city = cityRepo.findById(cityId).orElseThrow();
+        advert.setRegion(city.getRegion());
+
+        //advert.setRegion(regionRepo.findById(regionId).orElse(null));
         advert.setTypeOfAnimal(typeOfAnimalRepo.findById(typeOfAnimalId).orElse(null));
 
         advertRepo.save(advert);

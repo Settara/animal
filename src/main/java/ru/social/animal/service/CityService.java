@@ -21,4 +21,9 @@ public class CityService {
     public Optional<City> findById(Long id) {
         return cityRepo.findById(id);
     }
+
+    public List<City> findByRegionId(Long regionId) {
+        return cityRepo.findByRegionId(regionId);
+    }
+
 }

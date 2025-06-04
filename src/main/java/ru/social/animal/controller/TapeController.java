@@ -7,11 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.social.animal.model.Advert;
+import ru.social.animal.model.City;
+import ru.social.animal.model.Region;
 import ru.social.animal.model.User;
 import ru.social.animal.service.*;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Comparator;
 
 @Controller
 public class TapeController {
@@ -31,6 +35,8 @@ public class TapeController {
     @Autowired
     private UserService userService;
 
+
+
     @GetMapping("/tape")
     public String showTape(@RequestParam(required = false) Long cityId,
                            @RequestParam(required = false) Long regionId,
@@ -40,8 +46,15 @@ public class TapeController {
 
         List<Advert> adverts = advertService.getFilteredAdverts(cityId, regionId, typeOfAnimalId);
         model.addAttribute("adverts", adverts);
-        model.addAttribute("cities", cityService.findAll());
-        model.addAttribute("regions", regionService.findAll());
+
+        List<City> cities = cityService.findAll();
+        cities.sort(Comparator.comparing(City::getTitle));
+        model.addAttribute("cities", cities);
+
+        List<Region> regions = regionService.findAll();
+        regions.sort(Comparator.comparing(Region::getTitle));
+        model.addAttribute("regions", regions);
+
         model.addAttribute("animalTypes", typeOfAnimalService.findAll());
 
         if (principal != null) {
@@ -52,6 +65,7 @@ public class TapeController {
         return "tape";
     }
 
+
     @GetMapping("/giveaway")
     public String showGiveAwayTape(@RequestParam(required = false) Long cityId,
                                    @RequestParam(required = false) Long regionId,
@@ -60,9 +74,15 @@ public class TapeController {
                                    Principal principal) {
 
         List<Advert> adverts = advertService.getFilteredGiveAwayAdverts(cityId, regionId, typeOfAnimalId);
+
         model.addAttribute("adverts", adverts);
-        model.addAttribute("cities", cityService.findAll());
-        model.addAttribute("regions", regionService.findAll());
+        List<City> cities = cityService.findAll();
+        cities.sort(Comparator.comparing(City::getTitle));
+        model.addAttribute("cities", cities);
+
+        List<Region> regions = regionService.findAll();
+        regions.sort(Comparator.comparing(Region::getTitle));
+        model.addAttribute("regions", regions);
         model.addAttribute("animalTypes", typeOfAnimalService.findAll());
 
         if (principal != null) {

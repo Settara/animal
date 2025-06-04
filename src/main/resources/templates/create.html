@@ -32,11 +32,11 @@
 
 <header class="bg-white shadow-sm p-3 mb-4">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-        <h3 class="mb-0">📢Создание </h3>
+        <h3 class="mb-0">📢 Создание</h3>
         <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
             <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
             <a href="/tape" class="btn btn-outline-primary">Лента</a>
-            <a href="/adverts/create" class="btn btn-primary">Cоздать объявление</a>
+            <a href="/adverts/create" class="btn btn-primary">Создать объявление</a>
             <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
             <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
             <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
@@ -78,20 +78,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="cityId" class="form-label">Город</label>
-                <select class="form-select" id="cityId" name="cityId" required>
+                <label for="city" class="form-label">Город</label>
+                <select class="form-select" id="city" name="cityId" required>
                     <option value="" disabled selected>Выберите город</option>
                     <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.title}"></option>
+
+
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="regionId" class="form-label">Регион</label>
-                <select class="form-select" id="regionId" name="regionId" required>
-                    <option value="" disabled selected>Выберите регион</option>
-                    <option th:each="region : ${regions}" th:value="${region.id}" th:text="${region.title}"></option>
-                </select>
-            </div>
 
             <div class="mb-3">
                 <label for="typeOfAnimalId" class="form-label">Тип животного</label>
@@ -153,7 +148,6 @@
         return true;
     }
 
-    // Предпросмотр изображения
     document.getElementById("imageFile").addEventListener("change", function () {
         const file = this.files[0];
         const preview = document.getElementById("imagePreview");
@@ -167,6 +161,26 @@
         } else {
             preview.style.display = "none";
         }
+    });
+
+    regionSelect.addEventListener('change', function () {
+        const regionId = this.value;
+        if (!regionId) {
+            citySelect.innerHTML = '<option value="">-- Сначала выберите регион --</option>';
+            return;
+        }
+
+        fetch(`/api/regions/${regionId}/cities`)
+            .then(response => response.json())
+            .then(cities => {
+                citySelect.innerHTML = '';
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.title;
+                    citySelect.appendChild(option);
+                });
+            });
     });
 </script>
 

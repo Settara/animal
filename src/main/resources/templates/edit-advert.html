@@ -4,28 +4,48 @@
     <meta charset="UTF-8">
     <title>Редактировать объявление</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap и иконки -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Переключение вкладок
+            const tabs = document.querySelectorAll('[data-tab]');
+            const sections = document.querySelectorAll('.tab-section');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    sections.forEach(section => section.classList.add('d-none'));
+                    document.querySelector(`#${tab.dataset.tab}`).classList.remove('d-none');
+                });
+            });
+
+            // Предпросмотр изображения
+            $('#imageInput').on('change', function (event) {
+                const [file] = event.target.files;
+                if (file) {
+                    $('#imagePreview').attr('src', URL.createObjectURL(file)).removeClass('d-none');
+                }
+            });
+        });
+    </script>
 
     <style>
         body {
-            background: linear-gradient(to right, #eef2f7, #ffffff);
+            background: linear-gradient(to right, #f5f8fb, #ffffff);
             font-family: 'Segoe UI', sans-serif;
         }
 
         .card {
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .form-label {
             font-weight: 500;
-        }
-
-        header .btn {
-            margin-left: 5px;
         }
 
         .section-title {
@@ -33,18 +53,26 @@
             font-weight: 600;
             color: #495057;
         }
+
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+        }
+
+        header .btn {
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
 
 <header class="bg-white shadow-sm py-3 mb-4">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="fa-solid fa-pen-to-square"></i> Редактирование</h3>
+        <h3 class="mb-0"><i class="fa-solid fa-pen-to-square"></i> Редактировать </h3>
         <div>
             <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
             <a href="/tape" class="btn btn-outline-primary">Лента</a>
             <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
-            <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary active">Мои объявления</a>
             <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
             <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
             <a href="/" class="btn btn-outline-secondary">На главную</a>
@@ -53,72 +81,88 @@
 </header>
 
 <div class="container mb-5">
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#" data-tab="main">Основное</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-tab="image">Изображение</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-tab="settings">Настройки</a>
+        </li>
+    </ul>
+
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
-            <div class="card p-4">
-                <h5 class="section-title mb-3">📝 Детали объявления</h5>
-                <form th:action="@{/adverts/{id}/edit(id=${advert.id})}" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label">Описание</label>
-                        <textarea class="form-control" name="description" rows="3" th:text="${advert.description}" required></textarea>
-                    </div>
+            <form th:action="@{/adverts/{id}/edit(id=${advert.id})}" method="post" enctype="multipart/form-data">
 
-                    <div class="mb-3">
-                        <label class="form-label">Адрес</label>
-                        <input type="text" class="form-control" name="address" th:value="${advert.address}" required>
-                    </div>
+                <div id="main" class="tab-section">
+                    <div class="card p-4 mb-4">
+                        <h5 class="section-title mb-3"><i class="fa-solid fa-circle-info"></i> Основная информация</h5>
 
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="isFound" name="isFound" th:checked="${advert.found}">
-                        <label class="form-check-label" for="isFound">Скрыть объявление</label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Изображение</label>
-                        <input type="file" class="form-control" name="imageFile" accept="image/*">
-                        <div class="form-text" th:if="${advert.linkImage}">
-                            Текущее: <a th:href="@{${advert.linkImage}}" target="_blank">Просмотреть</a>
+                        <div class="mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" name="description" rows="4" th:text="${advert.description}"></textarea>
                         </div>
-                        <div class="text-danger" th:if="${imageError}" th:text="${imageError}"></div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Город</label>
-                        <select class="form-select" name="cityId" required>
-                            <option th:each="c : ${cities}" th:value="${c.id}" th:text="${c.title}"
-                                    th:selected="${c.id==advert.city.id}"></option>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Адрес</label>
+                            <input type="text" class="form-control" name="address" th:value="${advert.address}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Регион</label>
-                        <select class="form-select" name="regionId" required>
-                            <option th:each="r : ${regions}" th:value="${r.id}" th:text="${r.title}"
-                                    th:selected="${r.id==advert.region.id}"></option>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Город</label>
+                            <select class="form-select" name="cityId">
+                                <option th:each="c : ${cities}" th:value="${c.id}" th:text="${c.title}"
+                                        th:selected="${c.id==advert.city.id}"></option>
+                            </select>
+                        </div>
 
-                    <div class="mb-4">
-                        <label class="form-label">Тип животного</label>
-                        <select class="form-select" name="typeOfAnimalId" required>
-                            <option th:each="t : ${animalTypes}" th:value="${t.id}" th:text="${t.title}"
-                                    th:selected="${t.id==advert.typeOfAnimal.id}"></option>
-                        </select>
+                        <div class="mb-3">
+                            <label class="form-label">Тип животного</label>
+                            <select class="form-select" name="typeOfAnimalId">
+                                <option th:each="t : ${animalTypes}" th:value="${t.id}" th:text="${t.title}"
+                                        th:selected="${t.id==advert.typeOfAnimal.id}"></option>
+                            </select>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success">💾 Сохранить изменения</button>
+                <div id="image" class="tab-section d-none">
+                    <div class="card p-4 mb-4">
+                        <h5 class="section-title mb-3"><i class="fa-solid fa-image"></i> Изображение</h5>
+
+                        <div class="mb-3">
+                            <input type="file" class="form-control" name="imageFile" accept="image/*" id="imageInput">
+                            <div class="form-text" th:if="${advert.linkImage}">
+                                Текущая: <a th:href="@{${advert.linkImage}}" target="_blank">Просмотреть</a>
+                            </div>
+                            <img id="imagePreview" src="#" class="img-thumbnail mt-3 d-none" style="max-width: 200px;">
+                            <div class="text-danger" th:if="${imageError}" th:text="${imageError}"></div>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
 
-            <div th:if="${error}" class="alert alert-danger mt-4" role="alert">
-                <span th:text="${error}"></span>
-            </div>
+                <div id="settings" class="tab-section d-none">
+                    <div class="card p-4 mb-4">
+                        <h5 class="section-title mb-3"><i class="fa-solid fa-gear"></i> Настройки</h5>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="isFound" name="isFound" th:checked="${advert.found}">
+                            <label class="form-check-label" for="isFound">Скрыть объявление</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid mb-5">
+                    <button type="submit" class="btn btn-primary">💾 Сохранить изменения</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

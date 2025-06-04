@@ -32,18 +32,16 @@ public class AnimalApplication implements CommandLineRunner {
 	private TypeOfAnimalRepo typeOfAnimalRepo;
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		if (regionRepo.count() == 0 && cityRepo.count() == 0) {
 			initRegionsAndCities();
 		}
-
 		if (typeOfAnimalRepo.count() == 0) {
 			initAnimalTypes();
 		}
 	}
 
 	private void initRegionsAndCities() {
-		// 10 регионов
 		Region[] regions = {
 				new Region(null, "Московская область", new ArrayList<>(), new ArrayList<>()),
 				new Region(null, "Ленинградская область", new ArrayList<>(), new ArrayList<>()),
@@ -54,12 +52,21 @@ public class AnimalApplication implements CommandLineRunner {
 				new Region(null, "Нижегородская область", new ArrayList<>(), new ArrayList<>()),
 				new Region(null, "Ростовская область", new ArrayList<>(), new ArrayList<>()),
 				new Region(null, "Челябинская область", new ArrayList<>(), new ArrayList<>()),
-				new Region(null, "Республика Башкортостан", new ArrayList<>(), new ArrayList<>())
+				new Region(null, "Республика Башкортостан", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Самарская область", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Пермский край", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Омская область", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Красноярский край", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Воронежская область", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Иркутская область", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Тюменская область", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Хабаровский край", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Приморский край", new ArrayList<>(), new ArrayList<>()),
+				new Region(null, "Алтайский край", new ArrayList<>(), new ArrayList<>())
 		};
 
 		regionRepo.saveAll(Arrays.asList(regions));
 
-		// Города для каждого региона (по 3 города)
 		List<City> cities = new ArrayList<>();
 		cities.addAll(createCitiesForRegion("Москва", "Химки", "Подольск", regions[0]));
 		cities.addAll(createCitiesForRegion("Санкт-Петербург", "Гатчина", "Выборг", regions[1]));
@@ -71,6 +78,16 @@ public class AnimalApplication implements CommandLineRunner {
 		cities.addAll(createCitiesForRegion("Ростов-на-Дону", "Таганрог", "Шахты", regions[7]));
 		cities.addAll(createCitiesForRegion("Челябинск", "Магнитогорск", "Златоуст", regions[8]));
 		cities.addAll(createCitiesForRegion("Уфа", "Стерлитамак", "Салават", regions[9]));
+		cities.addAll(createCitiesForRegion("Самара", "Тольятти", "Сызрань", regions[10]));
+		cities.addAll(createCitiesForRegion("Пермь", "Березники", "Соликамск", regions[11]));
+		cities.addAll(createCitiesForRegion("Омск", "Калачинск", "Исилькуль", regions[12]));
+		cities.addAll(createCitiesForRegion("Красноярск", "Ачинск", "Железногорск", regions[13]));
+		cities.addAll(createCitiesForRegion("Воронеж", "Лиски", "Россошь", regions[14]));
+		cities.addAll(createCitiesForRegion("Иркутск", "Ангарск", "Братск", regions[15]));
+		cities.addAll(createCitiesForRegion("Тюмень", "Ишим", "Тобольск", regions[16]));
+		cities.addAll(createCitiesForRegion("Хабаровск", "Комсомольск-на-Амуре", "Советская Гавань", regions[17]));
+		cities.addAll(createCitiesForRegion("Владивосток", "Находка", "Арсеньев", regions[18]));
+		cities.addAll(createCitiesForRegion("Барнаул", "Бийск", "Рубцовск", regions[19]));
 
 		cityRepo.saveAll(cities);
 	}
