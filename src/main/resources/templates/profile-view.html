@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Профиль</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <style>
+        body {
+            background: linear-gradient(120deg, #f0f4ff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
         .profile-avatar {
             width: 180px;
             height: 180px;
@@ -13,11 +28,18 @@
             border: 4px solid #ffffff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
-            cursor: pointer;
+            cursor: zoom-in;
         }
 
         .profile-avatar:hover {
             transform: scale(1.05);
+        }
+
+        .card-post {
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.6s ease;
+            border: none;
         }
 
         .card-post img {
@@ -25,16 +47,12 @@
             object-fit: cover;
             height: 200px;
             flex: 1 1 calc(33.33% - 10px);
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
         }
 
-        .card-post {
-            border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .card-post:hover {
-            transform: translateY(-5px);
+        .card-post img:hover {
+            transform: scale(1.03);
         }
 
         .image-row {
@@ -43,38 +61,63 @@
             gap: 10px;
             flex-wrap: wrap;
         }
-    </style>
-    <script>
-        function openImageFullscreen(imageUrl) {
-            const win = window.open();
-            win.document.write('<img src="' + imageUrl + '" style="width:100%;height:100%;object-fit:contain;">');
-            win.document.title = "Фото пользователя";
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
         }
-    </script>
+
+        /* Модалка */
+        .modal-backdrop-custom {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            cursor: zoom-out;
+        }
+
+        .modal-backdrop-custom img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal-backdrop-custom.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
 <header class="bg-white shadow-sm p-3 mb-4">
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h3 class="mb-0">Личный кабинет</h3>
-        <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
-        <a href="/tape" class="btn btn-outline-primary">Лента</a>
-        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
-        <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
-        <a href="/profile" class="btn btn-outline-primary">Редактировать</a>
-        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
-        <a href="/" class="btn btn-outline-primary">На главную</a>
+        <h3 class="mb-0"><i class="fa-solid fa-user"></i> Профиль</h3>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
+            <a href="/tape" class="btn btn-outline-primary">Лента</a>
+            <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+            <a href="/profile" class="btn btn-outline-primary">Редактировать</a>
+            <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
+            <a href="/" class="btn btn-outline-secondary">На главную</a>
+        </div>
     </div>
 </header>
 
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <div class="row align-items-center">
         <div class="col-md-4 text-center mb-4">
             <div th:if="${user.imageProfile != null and !user.imageProfile.isEmpty()}">
-                <img th:src="@{${user.imageProfile}}"
-                     class="profile-avatar"
-                     alt="Фото пользователя"
-                     th:onclick="'openImageFullscreen(\'' + @{${user.imageProfile}} + '\')'">
+                <img th:src="@{${user.imageProfile}}" class="profile-avatar zoomable" alt="Фото пользователя">
             </div>
             <div th:if="${user.imageProfile == null or user.imageProfile.isEmpty()}"
                  class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle"
@@ -92,19 +135,16 @@
     </div>
 
     <div class="mt-5">
-        <h4 class="mb-3">Посты пользователя</h4>
-        <div class="row g-3" th:each="post : ${posts}">
+        <h4 class="mb-3"><i class="fa-solid fa-feather"></i> Посты пользователя</h4>
+        <div class="row g-4" th:each="post : ${posts}">
             <div class="col-md-12">
-                <div class="card card-post p-3">
+                <div class="card card-post p-4">
                     <div class="card-body">
                         <p class="card-text" th:text="${post.description}"></p>
                         <div class="image-row mb-3">
-                            <img th:if="${post.linkImageFirst}" th:src="@{${post.linkImageFirst}}"
-                                 th:onclick="'openImageFullscreen(\'' + @{${post.linkImageFirst}} + '\')'" style="cursor:pointer;">
-                            <img th:if="${post.linkImageSecond}" th:src="@{${post.linkImageSecond}}"
-                                 th:onclick="'openImageFullscreen(\'' + @{${post.linkImageSecond}} + '\')'" style="cursor:pointer;">
-                            <img th:if="${post.linkImageThird}" th:src="@{${post.linkImageThird}}"
-                                 th:onclick="'openImageFullscreen(\'' + @{${post.linkImageThird}} + '\')'" style="cursor:pointer;">
+                            <img th:if="${post.linkImageFirst}" th:src="@{${post.linkImageFirst}}" class="zoomable" alt="Фото поста">
+                            <img th:if="${post.linkImageSecond}" th:src="@{${post.linkImageSecond}}" class="zoomable" alt="Фото поста">
+                            <img th:if="${post.linkImageThird}" th:src="@{${post.linkImageThird}}" class="zoomable" alt="Фото поста">
                         </div>
                         <p class="text-muted" th:text="'Опубликовано: ' + ${post.datePublish}"></p>
                         <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-outline-primary btn-sm">Открыть</a>
@@ -115,5 +155,29 @@
     </div>
 </div>
 
+<!-- Модальное окно -->
+<div id="imageModal" class="modal-backdrop-custom" onclick="this.classList.remove('show')">
+    <img id="modalImage" src="#" alt="Полноэкранное изображение">
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+
+        document.querySelectorAll(".zoomable").forEach(img => {
+            img.addEventListener("click", () => {
+                modalImg.src = img.src;
+                modal.classList.add("show");
+            });
+        });
+
+        modal.addEventListener("click", () => {
+            modal.classList.remove("show");
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

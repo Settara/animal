@@ -1,123 +1,174 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Создать объявление</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script>
-        function toggleImageInput() {
-            const checkbox = document.getElementById('noImage');
-            const imageInput = document.getElementById('imageFile');
-            imageInput.disabled = checkbox.checked;
-            imageInput.required = !checkbox.checked;
-            imageInput.closest('.mb-3').style.display = checkbox.checked ? 'none' : 'block';
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        .card-custom {
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            padding: 2rem;
         }
-
-        function validateForm(event) {
-            const description = document.getElementById("description");
-            const address = document.getElementById("address");
-            let errorMessages = [];
-            let hasErrors = false;
-
-            if (description.value.trim().length > 495) {
-                errorMessages.push("Описание не должно превышать 500 символов.");
-                description.value = "";
-                hasErrors = true;
-            }
-
-            if (address.value.trim().length > 200) {
-                errorMessages.push("Адрес не должно превышать 200 символов.");
-                address.value = "";
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                event.preventDefault();
-                alert(errorMessages.join("\n"));
-                return false;
-            }
-            return true;
+        .form-label {
+            font-weight: 500;
         }
-
-    </script>
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        #imagePreview {
+            max-width: 200px;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
 <header class="bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">Создать объявление</h3>
-        <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
-        <a href="/tape" class="btn btn-outline-primary">Лента</a>
-        <a href="/adverts/create" class="btn btn-outline-primary active">Создать объявление</a>
-        <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
-        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
-        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
-        <a href="/" class="btn btn-outline-primary">На главную</a>
-
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <h3 class="mb-0">📢Создание </h3>
+        <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+            <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
+            <a href="/tape" class="btn btn-outline-primary">Лента</a>
+            <a href="/adverts/create" class="btn btn-primary">Cоздать объявление</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+            <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
+            <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
+            <a href="/" class="btn btn-outline-dark">На главную</a>
+        </div>
     </div>
 </header>
 
-<div class="container mt-4">
+<div class="container mb-5">
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/adverts/add}" method="post" enctype="multipart/form-data" onsubmit="return validateForm(event)">
-        <div class="mb-3">
-            <label for="description" class="form-label">Описание</label>
-            <textarea class="form-control" id="description" name="description" rows="4" maxlength="500" required></textarea>
-            <div class="form-text">Максимум 500 символов</div>
-        </div>
+    <div class="card card-custom mx-auto" style="max-width: 800px;">
+        <h4 class="section-title">📢 Новое объявление</h4>
 
-        <div class="mb-3">
-            <label for="address" class="form-label">Адрес</label>
-            <input type="text" class="form-control" id="address" name="address" maxlength="200" required>
-            <div class="form-text">Максимум 200 символов</div>
-        </div>
+        <form th:action="@{/adverts/add}" method="post" enctype="multipart/form-data" onsubmit="return validateForm(event)">
+            <div class="mb-3">
+                <label for="description" class="form-label">Описание</label>
+                <textarea class="form-control" id="description" name="description" rows="4" maxlength="500" required></textarea>
+                <div class="form-text">Максимум 500 символов</div>
+            </div>
 
-        <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id="noImage" name="noImage" onclick="toggleImageInput()">
-            <label class="form-check-label" for="noImage">Без фото</label>
-        </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Адрес</label>
+                <input type="text" class="form-control" id="address" name="address" maxlength="200" required>
+                <div class="form-text">Максимум 200 символов</div>
+            </div>
 
-        <div class="mb-3">
-            <label for="imageFile" class="form-label">Изображение</label>
-            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
-        </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="noImage" name="noImage" onclick="toggleImageInput()">
+                <label class="form-check-label" for="noImage">Без фото</label>
+            </div>
 
-        <div class="mb-3">
-            <label for="cityId" class="form-label">Город</label>
-            <select class="form-select" id="cityId" name="cityId" required>
-                <option value="" disabled selected>Выберите город</option>
-                <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.title}"></option>
-            </select>
-        </div>
+            <div class="mb-3">
+                <label for="imageFile" class="form-label">Фото животного</label>
+                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
+                <img id="imagePreview" class="img-thumbnail" alt="Предпросмотр">
+            </div>
 
-        <div class="mb-3">
-            <label for="regionId" class="form-label">Регион</label>
-            <select class="form-select" id="regionId" name="regionId" required>
-                <option value="" disabled selected>Выберите регион</option>
-                <option th:each="region : ${regions}" th:value="${region.id}" th:text="${region.title}"></option>
-            </select>
-        </div>
+            <div class="mb-3">
+                <label for="cityId" class="form-label">Город</label>
+                <select class="form-select" id="cityId" name="cityId" required>
+                    <option value="" disabled selected>Выберите город</option>
+                    <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.title}"></option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label for="typeOfAnimalId" class="form-label">Тип животного</label>
-            <select class="form-select" id="typeOfAnimalId" name="typeOfAnimalId" required>
-                <option value="" disabled selected>Выберите тип</option>
-                <option th:each="type : ${animalTypes}" th:value="${type.id}" th:text="${type.title}"></option>
-            </select>
-        </div>
+            <div class="mb-3">
+                <label for="regionId" class="form-label">Регион</label>
+                <select class="form-select" id="regionId" name="regionId" required>
+                    <option value="" disabled selected>Выберите регион</option>
+                    <option th:each="region : ${regions}" th:value="${region.id}" th:text="${region.title}"></option>
+                </select>
+            </div>
 
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="giveAway" name="giveAway">
-            <label class="form-check-label" for="giveAway">Отдать животное</label>
-        </div>
+            <div class="mb-3">
+                <label for="typeOfAnimalId" class="form-label">Тип животного</label>
+                <select class="form-select" id="typeOfAnimalId" name="typeOfAnimalId" required>
+                    <option value="" disabled selected>Выберите тип</option>
+                    <option th:each="type : ${animalTypes}" th:value="${type.id}" th:text="${type.title}"></option>
+                </select>
+            </div>
 
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="giveAway" name="giveAway">
+                <label class="form-check-label" for="giveAway">Я хочу отдать животное</label>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Создать</button>
-    </form>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg">📨 Создать объявление</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    function toggleImageInput() {
+        const checkbox = document.getElementById('noImage');
+        const imageInput = document.getElementById('imageFile');
+        const preview = document.getElementById('imagePreview');
+        imageInput.disabled = checkbox.checked;
+        imageInput.required = !checkbox.checked;
+        imageInput.closest('.mb-3').style.display = checkbox.checked ? 'none' : 'block';
+        if (checkbox.checked) {
+            preview.style.display = 'none';
+            preview.src = '#';
+        }
+    }
+
+    function validateForm(event) {
+        const description = document.getElementById("description");
+        const address = document.getElementById("address");
+        let errorMessages = [];
+        let hasErrors = false;
+
+        if (description.value.trim().length > 495) {
+            errorMessages.push("Описание не должно превышать 500 символов.");
+            description.value = "";
+            hasErrors = true;
+        }
+
+        if (address.value.trim().length > 200) {
+            errorMessages.push("Адрес не должен превышать 200 символов.");
+            address.value = "";
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            event.preventDefault();
+            alert(errorMessages.join("\n"));
+            return false;
+        }
+        return true;
+    }
+
+    // Предпросмотр изображения
+    document.getElementById("imageFile").addEventListener("change", function () {
+        const file = this.files[0];
+        const preview = document.getElementById("imagePreview");
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = "none";
+        }
+    });
+</script>
 
 </body>
 </html>

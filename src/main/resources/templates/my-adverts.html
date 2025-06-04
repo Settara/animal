@@ -1,48 +1,126 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-    <meta charset="UTF-8"><title>Мои объявления</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    <meta charset="UTF-8">
+    <title>🐶 Мои объявления</title>
 
-<header class="bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">Мои объявления</h3>
-        <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
-        <a href="/tape" class="btn btn-outline-primary">Лента</a>
-        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
-        <a href="/adverts/my-adverts" class="btn btn-outline-primary active">Мои объявления</a>
-        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
-        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
-        <a href="/" class="btn btn-outline-primary">На главную</a>
+    <!-- Bootstrap, Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #f0f4ff, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card img {
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+            border-right: 1px solid #eee;
+        }
+
+        .no-photo {
+            height: 100%;
+            width: 100%;
+            background: #6c757d;
+            color: white;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h5.card-title {
+            font-size: 1.2rem;
+        }
+
+        .emoji-label {
+            font-size: 1.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="bg-white shadow-sm py-3 mb-4">
+    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+            <h3 class="mb-0"><i class="fa-solid fa-paw"></i> Мои объявления</h3>
+        </div>
+        <div class="d-flex flex-wrap gap-2 justify-content-end">
+            <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
+            <a href="/tape" class="btn btn-outline-primary">Лента</a>
+            <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary active">Мои объявления</a>
+            <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
+            <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
+            <a href="/" class="btn btn-outline-secondary">На главную</a>
+        </div>
     </div>
 </header>
 
+
 <div class="container mt-4">
-    <div class="row">
+    <div class="row g-4">
         <div class="col-12" th:each="advert : ${adverts}">
-            <div class="card mb-4 shadow d-flex flex-row">
-                <div class="flex-shrink-0" style="width:200px;height:150px;">
-                    <img th:if="${advert.linkImage}" th:src="@{${advert.linkImage}}" style="width:100%;height:100%;object-fit:cover">
-                    <div th:if="${advert.linkImage==null}"
-                         class="d-flex align-items-center justify-content-center bg-secondary text-white"
-                         style="width:100%;height:100%;">Нет фото</div>
+            <div class="card shadow-sm d-flex flex-row">
+                <div style="width: 220px; height: 160px;">
+                    <img th:if="${advert.linkImage}" th:src="@{${advert.linkImage}}"
+                         alt="Фото объявления">
+                    <div th:if="${advert.linkImage == null}" class="no-photo">🙈 Нет фото</div>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <a th:href="@{/adverts/{id}/edit(id=${advert.id})}" class="text-decoration-none">
-                            <span th:text="${advert.typeOfAnimal.title} + ' — ' + ${advert.city.title}"></span>
-                            <span th:if="${advert.found}" class="badge bg-success ms-2">Найдено</span>
-                            <span th:if="${advert.giveAway}" class="badge bg-warning text-dark ms-2">Ищу хозяина</span>
+                    <h5 class="card-title mb-2">
+                        <a th:href="@{/adverts/{id}/edit(id=${advert.id})}" class="text-decoration-none text-dark">
+                            🐕‍🦺 <span th:text="${advert.typeOfAnimal.title} + ' — ' + ${advert.city.title}">Животное — Город</span>
                         </a>
+                        <span th:if="${advert.found}" class="badge bg-success ms-2">Найдено ✅</span>
+                        <span th:if="${advert.giveAway}" class="badge bg-warning text-dark ms-2">Ищу хозяина 🏡</span>
                     </h5>
 
-                    <p class="card-text" th:text="${advert.description}"></p>
-                    <p class="card-text">
-                        <small class="text-muted" th:text="'Адрес: ' + ${advert.address}"></small>
+                    <p class="mb-2" th:text="${advert.description}">Описание объявления</p>
+                    <p class="text-muted mb-1">
+                        📍 <small th:text="'Адрес: ' + ${advert.address}">Адрес</small>
                     </p>
-                    <p><small th:text="'Опубликовано: ' + ${advert.datePublish}"></small></p>
+                    <p class="text-muted">
+                        🕒 <small th:text="'Опубликовано: ' + ${advert.datePublish}">Дата публикации</small>
+                    </p>
                 </div>
             </div>
         </div>

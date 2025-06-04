@@ -5,153 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #e8f0fe, #ffffff);
+        }
+        .card {
+            border-radius: 20px;
+        }
+        .form-label::after {
+            content: " ✨";
+        }
+    </style>
 </head>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+<body class="d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        Inputmask({
-            mask: "+7 (999) 999-99-99",
-            showMaskOnHover: false,
-            clearIncomplete: true
-        }).mask(document.querySelector('input[name="phone"]'));
-    });
-</script>
+    $(document).ready(function () {
+        $('input[name="phone"]').mask('+7 (000) 000-00-00', {
+            placeholder: "+7 (___) ___-__-__"
+        });
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        Inputmask({
-            mask: "+7 (999) 999-99-99",
-            showMaskOnHover: false,
-            showMaskOnFocus: true,
-            clearIncomplete: false,
-            autoUnmask: false,
-            placeholder: "_"
-        }).mask(document.querySelector('input[name="phone"]'));
-
-        const form = document.querySelector("form");
-        form.addEventListener("submit", function (event) {
-            form.querySelectorAll("input").forEach(input => {
-                if (!input.checkValidity()) {
-                    input.classList.add("is-invalid");
-                    event.preventDefault();
-                    event.stopPropagation();
+        $('form').on('submit', function (e) {
+            $(this).find('input').each(function () {
+                if (!this.checkValidity()) {
+                    $(this).addClass('is-invalid');
+                    e.preventDefault();
+                    e.stopPropagation();
                 } else {
-                    input.classList.remove("is-invalid");
+                    $(this).removeClass('is-invalid');
                 }
             });
         });
 
-        document.querySelectorAll("input").forEach(input => {
-            input.addEventListener("input", () => {
-                if (input.checkValidity()) {
-                    input.classList.remove("is-invalid");
-                }
-            });
+        $('input').on('input', function () {
+            if (this.checkValidity()) {
+                $(this).removeClass('is-invalid');
+            }
         });
     });
 </script>
-
-
-<body class="bg-light d-flex flex-column align-items-center justify-content-center min-vh-100">
 
 <header class="fixed-top bg-white border-bottom shadow-sm w-100 py-3">
     <div class="container text-center">
-        <h3 class="mb-0">Социальная сеть для владельцев животных</h3>
+        <h3 class="mb-0">🐾 Добро пожаловать в Animal Connect!</h3>
     </div>
 </header>
 
 <main class="container mt-5 pt-5 d-flex flex-column align-items-center">
-    <div class="card shadow-sm p-4 w-100" style="max-width: 400px;">
-        <h1 class="mb-4 text-center">Регистрация</h1>
+    <div class="card shadow p-4 w-100" style="max-width: 450px;">
+        <h2 class="text-center mb-4">Регистрация 📝</h2>
 
-        <div th:if="${emailExistsError}" class="alert alert-danger" role="alert">
-            <span th:text="${emailExistsError}"></span>
-        </div>
-        <div th:if="${phoneExistsError}" class="alert alert-danger" role="alert">
-            <span th:text="${phoneExistsError}"></span>
-        </div>
-
-        <!-- ... HEAD и скрипты без изменений -->
+        <div th:if="${emailExistsError}" class="alert alert-danger" role="alert" th:text="${emailExistsError}"></div>
+        <div th:if="${phoneExistsError}" class="alert alert-danger" role="alert" th:text="${phoneExistsError}"></div>
 
         <form th:action="@{/register}" th:object="${user}" method="POST">
-
             <div class="mb-3">
                 <label class="form-label">Имя</label>
                 <input type="text" class="form-control" th:field="*{firstName}" required maxlength="30" minlength="2">
-                <div class="text-danger small" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Фамилия</label>
                 <input type="text" class="form-control" th:field="*{secondName}" required maxlength="30" minlength="2">
-                <div class="text-danger small" th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}"></div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="text"
+                <input type="email"
                        class="form-control"
                        th:field="*{email}"
                        name="email"
                        required
-                       maxlength="30"
-                       minlength="5"
+                       maxlength="50"
                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                       title="Введите корректный email, например example@mail.ru">
-
+                       title="Введите корректный email, например: user@example.com">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Пароль</label>
-                <input type="password"
-                       class="form-control"
-                       th:field="*{password}"
-                       required
-                       maxlength="30"
-                       minlength="6"
-                       title="Минимум 6 символов">
-                <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <input type="password" class="form-control" th:field="*{password}" required minlength="6" maxlength="30">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Телефон</label>
-                <input type="tel"
+                <input type="text"
                        class="form-control"
                        th:field="*{phone}"
                        name="phone"
                        required
-                       inputmode="numeric"
-                       placeholder="+7 (___) ___-__-__"
-                       maxlength="18"
-                       title="Формат: +7 (XXX) XXX-XX-XX">
-                <div class="text-danger small" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                       pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}"
+                       title="Формат: +7 (999) 123-45-67"
+                       placeholder="+7 (___) ___-__-__">
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Пол</label>
                 <select class="form-select" th:field="*{sex}" required>
                     <option value="">Выберите пол</option>
-                    <option value="Мужской">Мужской</option>
-                    <option value="Женский">Женский</option>
+                    <option value="Мужской">Мужской 👨</option>
+                    <option value="Женский">Женский 👩</option>
                 </select>
-                <div class="text-danger small" th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}"></div>
             </div>
 
-            <div class="d-grid mb-2">
-                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">🚀 Зарегистрироваться</button>
             </div>
 
             <div class="text-center">
-                <a th:href="@{/login}" class="text-decoration-none">Уже есть аккаунт? Войти</a>
+                <a th:href="@{/login}" class="text-decoration-none">Уже есть аккаунт? Войти ➡️</a>
             </div>
         </form>
-
     </div>
 
-    <a href="/" class="btn btn-outline-primary mt-4">Вернуться на главную страницу</a>
+    <a href="/" class="btn btn-outline-primary mt-4">🏠 Вернуться на главную</a>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

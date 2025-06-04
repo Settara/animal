@@ -1,75 +1,157 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Личный кабинет</title>
+    <title>Редактирование профиля</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap и иконки -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<script>
-    $(document).ready(function(){
-        $('#phone').mask('+7 (000) 000-00-00', {
-            placeholder: "+7 (___) ___-__-__"
+    <!-- jQuery и маска -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('#phone').mask('+7 (000) 000-00-00', {
+                placeholder: "+7 (___) ___-__-__"
+            });
+
+            // Предпросмотр аватара
+            $('#avatarInput').on('change', function(event) {
+                const [file] = event.target.files;
+                if (file) {
+                    $('#avatarPreview').attr('src', URL.createObjectURL(file)).removeClass('d-none');
+                }
+            });
+
+            // Вкладки
+            const tabs = document.querySelectorAll('[data-tab]');
+            const sections = document.querySelectorAll('.tab-section');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    sections.forEach(section => {
+                        section.classList.add('d-none');
+                    });
+                    document.querySelector(`#${tab.dataset.tab}`).classList.remove('d-none');
+                });
+            });
+
+            // Подтверждение сохранения профиля
+            $('form[action="/profile/update"]').on('submit', function () {
+                alert('✅ Изменения сохранены!');
+            });
+
+            // Проверка пароля
+            $('form[action="/profile/change-password"]').on('submit', function (e) {
+                const newPass = $('#newPassword').val();
+                const confirmPass = $('#confirmPassword').val();
+                if (newPass !== confirmPass) {
+                    e.preventDefault();
+                    alert('Новый пароль и подтверждение не совпадают!');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-    document.querySelector('form[action="/profile/change-password"]').addEventListener('submit', function(e) {
-        const newPass = document.getElementById('newPassword').value;
-        const confirmPass = document.getElementById('confirmPassword').value;
-        if (newPass !== confirmPass) {
-            e.preventDefault();
-            alert('Новый пароль и подтверждение не совпадают!');
+    <style>
+        body {
+            background: linear-gradient(to right, #eef2f7, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
         }
-    });
-</script>
 
-<body class="bg-light">
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
 
-<header class="bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">Личный кабинет</h3>
-        <a href="/tape" class="btn btn-outline-primary">Лента</a>
-        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
-        <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
-        <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary active">Профиль</a>
-        <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
-        <a href="/" class="btn btn-outline-primary">На главную</a>
+        .form-label {
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        header .btn {
+            margin-left: 5px;
+        }
+
+        .alert {
+            border-radius: 12px;
+        }
+
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<header class="bg-white shadow-sm py-3 mb-4">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="fa-solid fa-user-gear"></i> Личный кабинет</h3>
+        <div>
+            <a href="/giveaway" class="btn btn-outline-primary">Ищем новых хозяев</a>
+            <a href="/tape" class="btn btn-outline-primary">Лента</a>
+            <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary">Мои объявления</a>
+            <a th:href="@{/profile/{id}(id=${user.id})}" class="btn btn-outline-primary">Профиль</a>
+            <a href="/posts/create" class="btn btn-outline-primary">Создать пост</a>
+            <a href="/" class="btn btn-outline-secondary">На главную</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container mb-5">
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#" data-tab="info">Профиль</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-tab="avatar">Аватар</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-tab="password">Пароль</a>
+        </li>
+    </ul>
 
-            <!-- Форма редактирования данных -->
-            <div class="card mb-4">
-                <div class="card-header">Редактировать личную информацию</div>
-                <div class="card-body">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div id="info" class="tab-section">
+                <div class="card p-4 mb-4">
+                    <h5 class="section-title mb-3"><i class="fa-solid fa-pen-to-square"></i> Редактировать информацию</h5>
                     <form th:action="@{/profile/update}" th:object="${user}" method="post">
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="firstName" class="form-label">Имя</label>
-                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required minlength="2" maxlength="30" pattern="[А-Яа-яA-Za-z\s\-]+" title="Только буквы, минимум 2 символа">
+                                <label class="form-label">Имя</label>
+                                <input type="text" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="30"
+                                       pattern="[А-Яа-яA-Za-z\s\-]+" title="Только буквы, минимум 2 символа">
                             </div>
                             <div class="col">
-                                <label for="secondName" class="form-label">Фамилия</label>
-                                <input type="text" class="form-control" id="secondName" th:field="*{secondName}" required minlength="2" maxlength="30" pattern="[А-Яа-яA-Za-z\s\-]+" title="Только буквы, минимум 2 символа">
+                                <label class="form-label">Фамилия</label>
+                                <input type="text" class="form-control" th:field="*{secondName}" required minlength="2" maxlength="30"
+                                       pattern="[А-Яа-яA-Za-z\s\-]+" title="Только буквы, минимум 2 символа">
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Телефон</label>
-                            <input type="text" class="form-control" id="phone" th:field="*{phone}" required pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" title="Формат: +7 (999) 123-45-67">
+                            <label class="form-label">Телефон</label>
+                            <input type="text" class="form-control" id="phone" th:field="*{phone}" required
+                                   pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" title="Формат: +7 (999) 123-45-67"
+                                   placeholder="+7 (___) ___-__-__">
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email (нельзя изменить)</label>
-                            <input type="email" class="form-control" id="email" th:value="*{email}" disabled>
+                            <label class="form-label">Email (нельзя изменить)</label>
+                            <input type="email" class="form-control" th:value="*{email}" disabled>
                         </div>
 
                         <div class="mb-3">
@@ -81,72 +163,61 @@
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            <button type="submit" class="btn btn-primary">💾 Сохранить изменения</button>
                         </div>
                     </form>
-
                 </div>
             </div>
 
-            <!-- Форма загрузки фото -->
-            <div class="card mt-4">
-                <div class="card-header">Загрузить фото профиля</div>
-                <div class="card-body">
+            <div id="avatar" class="tab-section d-none">
+                <div class="card p-4 mb-4">
+                    <h5 class="section-title mb-3"><i class="fa-solid fa-image"></i> Фото профиля</h5>
                     <form action="/profile/upload-image" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <input type="file" class="form-control" name="imageFile" accept="image/*" required>
+                            <input type="file" class="form-control" name="imageFile" accept="image/*" id="avatarInput" required>
                         </div>
+                        <img id="avatarPreview" src="#" class="img-thumbnail mb-3 d-none" style="max-width: 200px;">
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-info">Загрузить фото</button>
+                            <button type="submit" class="btn btn-info text-white">📤 Загрузить фото</button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Уведомление об ошибке (например, неверный пароль) -->
-            <div th:if="${error}" class="alert alert-danger mt-4" role="alert">
-                <span th:text="${error}"></span>
-            </div>
-
-            <!-- Уведомление об успешной смене пароля, только если нет ошибки -->
-            <div th:if="${passwordChanged} and !${error}" class="alert alert-success mt-3">
-                Пароль успешно изменен.
-            </div>
-
-            <!-- Форма смены пароля -->
-            <div class="card mt-4">
-                <div class="card-header">Сменить пароль</div>
-                <div class="card-body">
+            <div id="password" class="tab-section d-none">
+                <div class="card p-4 mt-4">
+                    <h5 class="section-title mb-3"><i class="fa-solid fa-lock"></i> Сменить пароль</h5>
                     <form action="/profile/change-password" method="post">
                         <div class="mb-3">
-                            <label for="oldPassword" class="form-label">Старый пароль</label>
+                            <label class="form-label">Старый пароль</label>
                             <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
                         </div>
                         <div class="mb-3">
-                            <label for="newPassword" class="form-label">Новый пароль</label>
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="6" title="Минимум 6 символов">
+                            <label class="form-label">Новый пароль</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="6">
                         </div>
                         <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Подтверждение нового пароля</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" title="Минимум 6 символов">
+                            <label class="form-label">Подтверждение нового пароля</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6">
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-warning">Изменить пароль</button>
+                            <button type="submit" class="btn btn-warning">🔒 Изменить пароль</button>
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger mt-4" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+            <div th:if="${passwordChanged} and !${error}" class="alert alert-success mt-4">
+                ✅ Пароль успешно изменён.
             </div>
 
         </div>
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-
-
-
-
 </html>

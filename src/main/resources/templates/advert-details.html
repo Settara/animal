@@ -4,68 +4,134 @@
     <meta charset="UTF-8">
     <title>Детали объявления</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        function openImageFullscreen(imageUrl) {
-            const win = window.open();
-            win.document.write('<img src="' + imageUrl + '" style="width:100%;height:100%;object-fit:contain;">');
-            win.document.title = "Фото животного";
+    <style>
+        /* Затемнённый фон для модального окна */
+        .modal-backdrop-custom {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            cursor: zoom-out;
         }
-    </script>
+        .modal-backdrop-custom img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-backdrop-custom.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        img.zoomable:hover {
+            transform: scale(1.02);
+            cursor: zoom-in;
+            transition: transform 0.2s ease-in-out;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
+<!-- Шапка -->
 <header class="bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <a href="/adverts/create" class="btn btn-outline-primary">Создать объявление</a>
-        <a href="/posts/create" class="btn btn-outline-primary active">Создать пост</a>
-        <a href="/" class="btn btn-outline-primary">На главную</a>
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h4 class="mb-0">Подробности объявления</h4>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="/giveaway" class="btn btn-outline-primary">🐾 Ищем новых хозяев</a>
+            <a href="/tape" class="btn btn-outline-primary">📜 Лента</a>
+            <a href="/adverts/create" class="btn btn-outline-primary">📢 Создать объявление</a>
+            <a href="/adverts/my-adverts" class="btn btn-outline-primary">📦 Мои объявления</a>
+            <a th:href="@{/profile/{id}(id=${advert.user.id})}" class="btn btn-outline-primary">👤 Профиль</a>
+            <a href="/" class="btn btn-outline-primary">🏠 На главную</a>
+        </div>
     </div>
 </header>
 
-<div class="container mt-5">
-    <div class="card shadow">
+<!-- Контент -->
+<div class="container mb-5">
+    <div class="card shadow overflow-hidden">
         <div class="row g-0">
-            <div class="col-md-4">
+            <!-- Фото -->
+            <div class="col-md-5 bg-light position-relative">
                 <div th:if="${advert.linkImage != null and !advert.linkImage.isEmpty()}">
-                    <img th:src="@{${advert.linkImage}}" class="img-fluid rounded-start" alt="Фото животного">
-                    <button class="btn btn-outline-primary mt-2 w-100"
-                            th:onclick="'openImageFullscreen(\'' + @{${advert.linkImage}} + '\')'">
-                        Посмотреть фото
-                    </button>
+                    <img th:src="@{${advert.linkImage}}" class="img-fluid w-100 h-100 object-fit-cover zoomable" alt="Фото животного" id="mainImage">
                 </div>
                 <div th:if="${advert.linkImage == null or advert.linkImage.isEmpty()}"
                      class="d-flex align-items-center justify-content-center bg-secondary text-white"
-                     style="height: 100%; min-height: 200px;">
+                     style="height: 100%; min-height: 300px;">
                     Нет фото
                 </div>
             </div>
-            <div class="col-md-8">
+
+            <!-- Описание -->
+            <div class="col-md-7">
                 <div class="card-body">
-                    <h3 class="card-title"
+                    <h3 class="card-title mb-3"
                         th:text="${advert.typeOfAnimal.title} + ' — ' + ${advert.city.title} + ', ' + ${advert.region.title}">
                     </h3>
+
                     <p class="card-text" th:text="${advert.description}"></p>
-                    <p class="card-text">
-                        <small class="text-muted" th:text="'Адрес: ' + ${advert.address}"></small>
-                    </p>
-                    <p class="card-text">
-                        <small class="text-muted" th:text="'Опубликовано: ' + ${advert.datePublish}"></small>
-                    </p>
+
+                    <div class="mb-2">
+                        <span class="text-muted fw-semibold">Адрес:</span>
+                        <span th:text="${advert.address}"></span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted fw-semibold">Опубликовано:</span>
+                        <span th:text="${advert.datePublish}"></span>
+                    </div>
+
                     <hr>
-                    <h5>Контактная информация</h5>
-                    <p th:text="'Имя: ' + ${advert.user.firstName}"></p>
-                    <p th:text="'Фамилия: ' + ${advert.user.secondName}"></p>
-                    <p th:text="'Email: ' + ${advert.user.email}"></p>
-                    <p th:text="'Телефон: ' + ${advert.user.phone}"></p>
-                    <a th:href="@{/profile/{id}(id=${advert.user.id})}" class="btn btn-primary mt-3">Перейти на профиль</a>
+
+                    <!-- Контакт -->
+                    <h5 class="mb-3">Контактная информация</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Имя:</strong> <span th:text="${advert.user.firstName}"></span></li>
+                        <li><strong>Фамилия:</strong> <span th:text="${advert.user.secondName}"></span></li>
+                        <li><strong>Email:</strong> <span th:text="${advert.user.email}"></span></li>
+                        <li><strong>Телефон:</strong> <span th:text="${advert.user.phone}"></span></li>
+                    </ul>
+
+                    <a th:href="@{/profile/{id}(id=${advert.user.id})}" class="btn btn-primary mt-3">Перейти в профиль</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Назад к ленте в зависимости от giveAway -->
-    <a th:href="${advert.giveAway} ? '/giveaway' : '/tape'" class="btn btn-secondary mt-3">← Назад к ленте</a>
+    <!-- Кнопка назад -->
+    <div class="text-start mt-4">
+        <a th:href="${advert.giveAway} ? '/giveaway' : '/tape'" class="btn btn-secondary">← Назад к ленте</a>
+    </div>
 </div>
+
+<!-- Модалка -->
+<div id="imageModal" class="modal-backdrop-custom" onclick="this.classList.remove('show')">
+    <img id="modalImage" src="#" alt="Просмотр фото">
+</div>
+
+<!-- Скрипт -->
+<script>
+    const mainImage = document.getElementById('mainImage');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    if (mainImage) {
+        mainImage.addEventListener('click', function () {
+            modalImage.src = this.src;
+            modal.classList.add('show');
+        });
+    }
+</script>
 
 </body>
 </html>
