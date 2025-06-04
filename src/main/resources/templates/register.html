@@ -13,8 +13,24 @@
         .card {
             border-radius: 20px;
         }
-        .form-label::after {
-            content: " ✨";
+        .input-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper input {
+            padding-left: 2.2rem;
+        }
+        .invalid-feedback {
+            display: none;
+        }
+        input.is-invalid + .invalid-feedback {
+            display: block;
         }
     </style>
 </head>
@@ -29,16 +45,47 @@
             placeholder: "+7 (___) ___-__-__"
         });
 
+        function isValidEmail(email) {
+            const atIndex = email.indexOf('@');
+            const dotIndex = email.lastIndexOf('.');
+            return (
+                email.length <= 50 &&
+                atIndex > 0 &&
+                dotIndex > atIndex &&
+                email.indexOf('@') === email.lastIndexOf('@')
+            );
+        }
+
+        $('input[name="email"]').on('input', function () {
+            const email = $(this).val();
+            if (!isValidEmail(email)) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
         $('form').on('submit', function (e) {
+            let valid = true;
+
+            const emailInput = $('input[name="email"]');
+            if (!isValidEmail(emailInput.val())) {
+                emailInput.addClass('is-invalid');
+                valid = false;
+            }
+
             $(this).find('input').each(function () {
                 if (!this.checkValidity()) {
                     $(this).addClass('is-invalid');
-                    e.preventDefault();
-                    e.stopPropagation();
+                    valid = false;
                 } else {
                     $(this).removeClass('is-invalid');
                 }
             });
+
+            if (!valid) {
+                e.preventDefault();
+            }
         });
 
         $('input').on('input', function () {
@@ -62,19 +109,21 @@
         <div th:if="${emailExistsError}" class="alert alert-danger" role="alert" th:text="${emailExistsError}"></div>
         <div th:if="${phoneExistsError}" class="alert alert-danger" role="alert" th:text="${phoneExistsError}"></div>
 
-        <form th:action="@{/register}" th:object="${user}" method="POST">
-            <div class="mb-3">
-                <label class="form-label">Имя</label>
-                <input type="text" class="form-control" th:field="*{firstName}" required maxlength="30" minlength="2">
+        <form th:action="@{/register}" th:object="${user}" method="POST" novalidate>
+            <div class="mb-3 input-wrapper">
+                <i class="fa fa-user input-icon"></i>
+                <input type="text" class="form-control" th:field="*{firstName}" required maxlength="30" minlength="2" placeholder="Имя">
+                <div class="invalid-feedback">Введите имя (от 2 до 30 символов)</div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Фамилия</label>
-                <input type="text" class="form-control" th:field="*{secondName}" required maxlength="30" minlength="2">
+            <div class="mb-3 input-wrapper">
+                <i class="fa fa-user input-icon"></i>
+                <input type="text" class="form-control" th:field="*{secondName}" required maxlength="30" minlength="2" placeholder="Фамилия">
+                <div class="invalid-feedback">Введите фамилию (от 2 до 30 символов)</div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Email</label>
+            <div class="mb-3 input-wrapper">
+                <i class="fa fa-envelope input-icon"></i>
                 <input type="email"
                        class="form-control"
                        th:field="*{email}"
@@ -82,33 +131,36 @@
                        required
                        maxlength="50"
                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                       title="Введите корректный email, например: user@example.com">
+                       placeholder="Email">
+                <div class="invalid-feedback">Введите корректный email (один @ и точка после)</div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Пароль</label>
-                <input type="password" class="form-control" th:field="*{password}" required minlength="6" maxlength="30">
+            <div class="mb-3 input-wrapper">
+                <i class="fa fa-lock input-icon"></i>
+                <input type="password" class="form-control" th:field="*{password}" required minlength="6" maxlength="30" placeholder="Пароль">
+                <div class="invalid-feedback">Пароль от 6 до 30 символов</div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Телефон</label>
+            <div class="mb-3 input-wrapper">
+                <i class="fa fa-phone input-icon"></i>
                 <input type="text"
                        class="form-control"
                        th:field="*{phone}"
                        name="phone"
                        required
                        pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}"
-                       title="Формат: +7 (999) 123-45-67"
                        placeholder="+7 (___) ___-__-__">
+                <div class="invalid-feedback">Введите телефон в формате +7 (999) 123-45-67</div>
             </div>
 
             <div class="mb-4">
-                <label class="form-label">Пол</label>
+                <label class="form-label">Пол ⚧️</label>
                 <select class="form-select" th:field="*{sex}" required>
                     <option value="">Выберите пол</option>
                     <option value="Мужской">Мужской 👨</option>
                     <option value="Женский">Женский 👩</option>
                 </select>
+                <div class="invalid-feedback">Пожалуйста, выберите пол</div>
             </div>
 
             <div class="d-grid mb-3">
