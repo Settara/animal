@@ -100,7 +100,6 @@ public class AdvertController {
         if (noImage == null && imageFile != null && !imageFile.isEmpty()) {
             String fileName = imageFile.getOriginalFilename();
 
-            // Проверка: есть ли у пользователя объявление с таким изображением
             List<Advert> existingAdverts = advertService.getAdvertsByUser(user);
             for (Advert advert : existingAdverts) {
                 String imagePath = advert.getLinkImage();
@@ -114,7 +113,6 @@ public class AdvertController {
                 }
             }
 
-            // сохраняем файл
             Path workingDir = Paths.get("").toAbsolutePath();
             File uploadDir = new File(workingDir.toFile(), "uploads/" + user.getId());
             if (!uploadDir.exists() && !uploadDir.mkdirs()) {
@@ -126,13 +124,10 @@ public class AdvertController {
             relativePath = "/uploads/" + user.getId() + "/" + fileName;
         }
 
-
         advertService.createAdvert(description, address, relativePath, cityId, typeOfAnimalId, giveAway, user);
         return "redirect:/tape";
     }
 
-
-    // Список «Моих объявлений»
     @GetMapping("/my-adverts")
     public String myAdverts(Model model, Principal principal) {
 
@@ -146,7 +141,6 @@ public class AdvertController {
         return "my-adverts";
     }
 
-    // Форма редактирования одного объявления
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, Principal principal) {
         User user = userService.findByEmail(principal.getName()).orElseThrow();

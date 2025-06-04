@@ -29,7 +29,7 @@ public class SecurityConfig {
                 })
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/register", "/images/**", "/uploads/**", "/tape").permitAll()
+                        .requestMatchers("/", "/register", "/images/**", "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

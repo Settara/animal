@@ -33,7 +33,6 @@ public class PostController {
         Post post = postService.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Пост не найден"));
 
-        // Получаем пользователя из поста
         User user = post.getUser();
 
         model.addAttribute("post", post);

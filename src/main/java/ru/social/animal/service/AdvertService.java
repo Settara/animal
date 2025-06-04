@@ -42,7 +42,6 @@ public class AdvertService {
         advert.setUser(user);
         advert.setCity(cityRepo.findById(cityId).orElse(null));
 
-        // Автоматически определяем регион из города
         City city = cityRepo.findById(cityId).orElseThrow();
         advert.setRegion(city.getRegion());
 
